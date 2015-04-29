@@ -10,8 +10,13 @@ public class Display {
 		this.player2=player2;
 	};
 	
-	public void setProgress(Player player){
-		
+	public void setPlayer1(Player player){
+		this.player1=player;
 	}
-	
+	public void setPlayer2(Player player){
+		this.player2=player;
+	}
+	public void displayScreen(){
+		System.out.println(screenTab);
+	}
 }
