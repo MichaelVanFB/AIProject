@@ -1,5 +1,5 @@
 package battleships;
 
-public class SmartAgent {
-
+public class SmartAgent extends Player {
+	
 }
