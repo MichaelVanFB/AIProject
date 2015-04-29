@@ -18,16 +18,13 @@ import javafx.stage.Stage;
 public class Game extends Application {
 	
 	private Label nothing=new Label("X");
-	private Label ships[]=new Label[4];
+	private Ship[] ships=new Ship[4];
 	
 	private Player player0;
 	private Player player1;
 	
 	@Override
 	public void start (Stage stage) throws Exception {
-		
-	// ships
-		ships[0]=new Label("*");
 		
 	BorderPane borderPane= new BorderPane();
 	
@@ -51,11 +48,11 @@ public class Game extends Application {
 	    HBox hbox = new HBox();
 	    
 
-		player0=new Player(0,"Winston");
-		player1=new Player(1,"Michael");
+		//player0=new Player(0,"Winston");
+		//player1=new Player(1,"Michael");
 
 		Label title=new Label("BattleShips");
-		Label playerName[]= new Label[2];
+		//Label playerName[]= new Label[2];
 		
 		//playerName[0]=new Label(player0.getName());
 		//playerName[1]=new Label(player1.getName());
