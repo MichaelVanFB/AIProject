@@ -31,7 +31,7 @@ enum CaseContents {
         this.shipType = shipType;
     }
     
-    ShipType getShip() {
+    ShipType getShipType() {
         return this.shipType;
     }
 }
