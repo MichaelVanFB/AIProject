@@ -83,7 +83,6 @@ public class Game extends Application {
 		String gridPaneStyle="-fx-border-color: black;\n";
 		String squareGridPaneStyle="-fx-border-color: black;\n";
 		gridPane.setStyle(gridPaneStyle);
-		
 
 		
 		for(int i=0 ; i < 20 ; i++){

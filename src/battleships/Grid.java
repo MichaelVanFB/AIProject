@@ -20,23 +20,23 @@ public class Grid
 enum CaseContents {
     UNKNOWN(null),
     MISS(null),
-    HIT_DESTROYER(Ship.DESTROYER),
-    HIT_CRUISER(Ship.CRUISER),
-    HIT_BATTLESHIP(Ship.BATTLESHIP),
-    HIT_CARRIER(Ship.CARRIER);
+    HIT_DESTROYER(ShipType.DESTROYER),
+    HIT_CRUISER(ShipType.CRUISER),
+    HIT_BATTLESHIP(ShipType.BATTLESHIP),
+    HIT_CARRIER(ShipType.CARRIER);
     
-    private final Ship ship;
+    private final ShipType shipType;
     
-    CaseContents(Ship ship) {
-        this.ship = ship;
+    CaseContents(ShipType shipType) {
+        this.shipType = shipType;
     }
     
-    Ship getShip() {
-        return this.ship;
+    ShipType getShip() {
+        return this.shipType;
     }
 }
 
-enum Ship {
+enum ShipType {
     DESTROYER (2),
     CRUISER (3),
     BATTLESHIP(4),
@@ -44,7 +44,7 @@ enum Ship {
     
     private final int length;
     
-    Ship(int length) {
+    ShipType(int length) {
         this.length = length;
     }
     
