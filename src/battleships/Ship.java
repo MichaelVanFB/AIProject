@@ -2,14 +2,14 @@ package battleships;
 
 public class Ship {
 	private ShipType type;
-	private String orientation;
+	private char orientation;
 	private int posX;
 	private int posY;
 	private int size;
 	private int shotCount=0;
 	private boolean sinked=false;
 	
-	public Ship(ShipType type, String orientation, int posX,int posY){
+	public Ship(ShipType type, char orientation, int posX,int posY){
 		this.type=type;
 		this.orientation=orientation;
 		this.posX=posX;
