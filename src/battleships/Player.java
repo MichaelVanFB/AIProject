@@ -3,7 +3,8 @@ package battleships;
 public class Player {
 	private int id;
 	private String name;
-	private String[][] grid = new String [20][20];
+	private String[][] grid = new String [10][10];
+	private Ship[] ships= new Ship[5];
 	private int score;
 	
 	public Player(int id, String name, String[][] grid){
@@ -20,6 +21,12 @@ public class Player {
 	}
 	public void setName(String name){
 		this.name=name;
+	}
+	public Ship[] getShips(){
+		return ships;
+	}
+	public void setShips(Ship[] ships){
+		this.ships=ships;
 	}
 	public void setScore(int score){
 		this.score=score;

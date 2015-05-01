@@ -3,111 +3,308 @@ package battleships;
 
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Game extends Application {
 	
-	private Label nothing=new Label("X");
-	private Ship[] ships=new Ship[4];
+	private Ship[][] ships=new Ship[2][5];
+	
+	/**
+	 * whole variables for CSS setting
+	 */
+	private String gridPaneStyle="-fx-border-color: black;\n";
+	private String squareGridPaneStyle="-fx-border-color: black;\n";
+	private String squareGridPaneStyleOnClick="-fx-background-color: transparent;\n";
+	private String squareGridPaneStyleOnTouch="-fx-background-color: gray;\n";
+	private String scoreStyle[]={"-fx-background-color: red;\n","-fx-background-color: green;\n"};
+	
+	Label label[][]= new Label[10][21];
+	
 	
 	private Player player0;
 	private Player player1;
 	
+	
+	
+	
+	
 	@Override
 	public void start (Stage stage) throws Exception {
 		
-	BorderPane borderPane= new BorderPane();
-	
-	borderPane.setTop(addHBox());
-	borderPane.setCenter(addGridPane());   
-
-	Group root = new Group();
-	
-	Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-	
-	stage.setScene(new Scene(root, primaryScreenBounds.getWidth(),
-			primaryScreenBounds.getHeight()));
-	
-	Scene scene=new Scene(borderPane);
-	stage.setScene(scene);
-    stage.show();
+		boolean gameSet=setGame(stage);
+		
+		if(gameSet==true){
+			BorderPane gameBorderPane= new BorderPane();
+			
+			/**
+			 * gameBorderPane handling
+			 */
+			gameBorderPane.setTop(addTitle("BattleShips"));
+			gameBorderPane.setCenter(addGridPane());   
+			gameBorderPane.setLeft(setPlayer(0));
+			gameBorderPane.setRight(setPlayer(1));
+			gameBorderPane.setPadding(new Insets(5,5,5,5));
+					
+			Group root = new Group();
+			
+			//Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+			
+			//stage.setScene(new Scene(root, primaryScreenBounds.getWidth(),
+			//		primaryScreenBounds.getHeight()));
+			
+			Scene gameScene=new Scene(gameBorderPane);
+			stage.setScene(gameScene);
+		    stage.show();
+		}
 	}
 	
-	public HBox addHBox() {
+	
+	/**
+	 * call this method to set a title to the window but inside the borderPage object
+	 * @param title
+	 * @return
+	 */
+	public VBox addTitle(String title) {
 		
-	    HBox hbox = new HBox();
+	    VBox vbox = new VBox();
 	    
-
-		//player0=new Player(0,"Winston");
-		//player1=new Player(1,"Michael");
-
-		Label title=new Label("BattleShips");
-		//Label playerName[]= new Label[2];
+		Label titleLabel=new Label(title);
 		
-		//playerName[0]=new Label(player0.getName());
-		//playerName[1]=new Label(player1.getName());
+		vbox.getChildren().add(titleLabel);
+		vbox.setSpacing(10);
+		vbox.setAlignment(Pos.CENTER);
+	    vbox.setPadding(new Insets(1, 5, 10, 5)); //top right bottom left
 
-
-	    //hbox.getChildren().addAll(title, playerName[0],playerName[1]);
-		hbox.getChildren().add(title);
-		hbox.setSpacing(10);
-		hbox.setAlignment(Pos.CENTER);
-	    hbox.setPadding(new Insets(1, 5, 10, 5));
-
-	    return hbox;
+	    return vbox;
 	}
+	
+	/**
+	 * call this function to set player informations/labels in the display
+	 * @param player
+	 * @return
+	 */
+	public VBox setPlayer(int player){
+		
+		VBox vbox= new VBox();
+		
+		/**
+		 * set the player name according to the current player selected as parameter
+		 */
+		if(player==0){
+			vbox.getChildren().add(new Label("Player 1"));
+		}
+		
+		if(player==1){
+			vbox.getChildren().add(new Label("Player 2"));
+		}
+		/**
+		 * label d'initialization
+		 */
+		Label score[]=new Label[5];
+		for(int i=0;i<5;i++){
+			score[i]=new Label();
+		}
+		
+		/**
+		 * this HBox has been created to contains the information labels
+		 * of the current player, which are displayed on the screen
+		 */
+		HBox scoreBox= new HBox();
+		scoreBox.setPadding(new Insets(5, 5, 5, 5));
+	    scoreBox.setSpacing(10);
+	    
+	    /**
+	     * this labels just show to the player how many time he stroke a ship
+	     * if in a first time, he succeeded to hit one 
+	     */
+		for(int i=0;i<5;i++){
+			if(ships[player][i].getShotCount() > 0){
+				score[i].setText(String.valueOf(ships[player][i]));
+				score[i].setStyle(scoreStyle[0]);
+				scoreBox.getChildren().add(score[i]);
+			}
+		}
+		
+		vbox.getChildren().add(scoreBox);
+		vbox.setAlignment(Pos.CENTER);
+		vbox.setPadding(new Insets(0,20,0,20));
+		return vbox;
+	}
+	
+	public void labelEffect(int[] labelPosition){
+		
+		label[labelPosition[0]][labelPosition[1]].setStyle(squareGridPaneStyleOnClick);
+	}
+	
 	
 	public GridPane addGridPane() {
 		
 		GridPane gridPane= new GridPane();
-		
-		Label label[][]= new Label[20][50];
-
+		/**
+		 * Set the the height gap between each label
+		 * Set the width gap between each label
+		 */
 		gridPane.setHgap(1); // Set the the height gap between each label
 		gridPane.setVgap(1); //Set the width gap between each label
 		gridPane.setAlignment(Pos.CENTER);
 		gridPane.setPadding(new Insets(5,5,5,5));
-		String gridPaneStyle="-fx-border-color: black;\n";
-		String squareGridPaneStyle="-fx-border-color: black;\n";
 		gridPane.setStyle(gridPaneStyle);
 
 		
-		for(int i=0 ; i < 20 ; i++){
-			for(int j=0 ; j < 50 ; j++){
+		for(int i=0 ; i < 10 ; i++){
+			for(int j=0 ; j < 21 ; j++){
 				
-				if(j == 25){
+				if(j == 10){
 					label[i][j]=new Label(" | ");
 					gridPane.add(label[i][j],j,i+1);
 				}
 				
 				//player0 grid
-				if(i > 0 && j < 25){
+				//from label[0][0] to label [10][9] included
+				if(j < 10 ){
 					label[i][j]=new Label("   ");
 					label[i][j].setStyle(squareGridPaneStyle);
 					gridPane.add(label[i][j],j,i+1);
 				}
 				
 				//player1 grid
-				if(i > 0 && j > 25){
+				//from label[0][11] to label [10][20] included
+				if(j > 10 ){
 					label[i][j]=new Label("   ");
 					label[i][j].setStyle(squareGridPaneStyle);
 					gridPane.add(label[i][j],j,i+1);
 				}
+				/**
+				 * handle each click which has been realized on a case
+				 */
+				final int IJ[]={i,j};
+				label[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+						/**
+						 * know then set the current player
+						 */
+						int currentPlayerId=-1;
+						if(IJ[1] < 10)
+							currentPlayerId=0;
+						if(IJ[1] > 10)
+							currentPlayerId=1;
+						/**
+						 * no matter whether the case clicked got a ship or not
+						 * set firstly its color to transparent
+						 */
+						labelEffect(IJ);
+
+						for(int i=0;i<5;i++){
+							/**
+							 * know if the label clicked belongs to a ship
+							 * then make options
+							 */
+							if(IJ[0]==ships[currentPlayerId][i].getPosX() && IJ[1]==ships[currentPlayerId][i].getPosY()){
+								/** 
+								 * if there is a ship touched and its shot number isn't already reached 
+								 */
+								if(ships[currentPlayerId][i].getShotCount() < ships[currentPlayerId][i].getSize()){
+									/**
+									 * increase the shotCount of the touched ship
+									 * if the square was a ship square, set its color
+									 */
+									ships[currentPlayerId][i].setShotCount(ships[currentPlayerId][i].getShotCount()+1);
+									
+									label[IJ[0]][IJ[1]].setStyle(squareGridPaneStyleOnTouch);
+
+								}
+								/**
+								 * if the ship hit has already completely been found out
+								 * then set it to sinked
+								 */
+								if(ships[currentPlayerId][i].getShotCount() >= ships[currentPlayerId][i].getSize()){
+									ships[currentPlayerId][i].setSinked();
+								}
+								setPlayer(currentPlayerId);
+							}
+						}
+					}
+					
+				});
 			}
 		}
+		
 	    return gridPane;
 	}
-
+	
+	/**
+	 * Call this function to know if someone has already won the game
+	 */
+	public void gameDone(){
+		int sinkedShipsCount=0;
+		/**
+		 * know how many ship have been touched by each player 
+		 * then stop the game if this number is equals to the ships number
+		 */
+		for(int i=0;i<5;i++){
+			if(ships[0][i].getSinked()==true){
+				sinkedShipsCount++;
+			}
+		}
+		if(sinkedShipsCount==5){
+			System.out.println("End");
+			//exit();
+		}
+	}
+	public VBox addSettingPane(){
+		
+		VBox settingPane=new VBox();
+		HBox buttons= new HBox();
+		buttons.setPadding(new Insets(5, 5, 5, 5));
+	    buttons.setSpacing(10);
+	    
+	    Button onePlayer=new Button();
+	    Button multiPlayer=new Button();
+	    onePlayer.setText("one player");
+	    multiPlayer.setText("multi player");
+	    
+	    buttons.getChildren().addAll(onePlayer, multiPlayer);
+	    
+	    
+	    Label consign=new Label ("Please set the player number");
+	    settingPane.getChildren().addAll(consign,buttons);
+	    
+	    return settingPane;
+	    
+	}
+	public boolean setGame(Stage stage){
+		
+		BorderPane gameSettingBorderPane=new BorderPane();
+		
+		/**
+		 * gameSettingBorderPane handling
+		 */
+		gameSettingBorderPane.setTop(addTitle("BattleShips"));
+		gameSettingBorderPane.setCenter(addSettingPane());
+		gameSettingBorderPane.setPadding(new Insets(5,5,5,5));
+		
+		Scene gameSettingScene=new Scene(gameSettingBorderPane);
+		stage.setScene(gameSettingScene);
+	    stage.show();
+		
+	    
+	    return false;
+	}
 	public static void main(String[]args){
 		launch(args);
 		
