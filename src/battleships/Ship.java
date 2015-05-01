@@ -15,3 +15,20 @@ public class Ship {
 		this.size=type.getLength();
 	}
 }
+
+enum ShipType {
+    DESTROYER (2),
+    CRUISER (3),
+    BATTLESHIP(4),
+    CARRIER(5);
+    
+    private final int length;
+    
+    ShipType(int length) {
+        this.length = length;
+    }
+    
+    int getLength() {
+        return this.length;
+    }
+}

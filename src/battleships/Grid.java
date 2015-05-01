@@ -1,71 +1,40 @@
 package battleships;
 
-public class Grid
-{
-    static class Case {
-        
-        private CaseContents contents;
-        
-        Case(CaseContents contents) {
-            this.contents = contents;
-        }
-        
-        Case() {
-            this(CaseContents.UNKNOWN);
-        }
-        
-        CaseContents getContents() {
-            return this.contents;
-        }
-        
-        void setContents(CaseContents contents) {
-            this.contents = contents;
-        }
+public class Grid<E extends Case>
+{   
+    /**
+     * cases can be a 2D array of Case or Probability case.
+     * It can be final as Case instances won't be added/deleted or moved,
+     * only the contents of each Case will be changed.
+     */
+    private final E[][] cases;
+    
+    // contrsuctor to make a blank grid
+    Grid(int height, int width) {
+        cases = (E[][]) new Object[height][width];
     }
     
-    private Case[][] cases;
-    
-    public Grid(int height, int width) {
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < height; j++) {
-                cases[i][j] = new Case();
-            } 
+    /**
+     * Constructor to make a grid that is a copy of another.
+     * We want to make copies (not clones!) of each case in the grid.
+     */
+    Grid(Grid<E> grid) {
+        // make a new empty grid of the same size
+        this(grid.getHeight(), grid.getWidth());
+        // iteratate over the cases of the new grid (this) and set them to the
+        // same values as those of the grid being copied
+        for (int i = 0; i < grid.getHeight(); i++) {
+            for (int j = 0; j < grid.getHeight(); j++) {
+                this.cases[i][j] = (E) grid.cases[i][j].copy();
+            }
         }
     }
-}
-
-enum CaseContents {
-    UNKNOWN(null),
-    MISS(null),
-    HIT_DESTROYER(ShipType.DESTROYER),
-    HIT_CRUISER(ShipType.CRUISER),
-    HIT_BATTLESHIP(ShipType.BATTLESHIP),
-    HIT_CARRIER(ShipType.CARRIER);
     
-    private final ShipType shipType;
-    
-    CaseContents(ShipType shipType) {
-        this.shipType = shipType;
+    int getHeight() {
+        return cases.length;
     }
     
-    ShipType getShipType() {
-        return this.shipType;
-    }
-}
-
-enum ShipType {
-    DESTROYER (2),
-    CRUISER (3),
-    BATTLESHIP(4),
-    CARRIER(5);
-    
-    private final int length;
-    
-    ShipType(int length) {
-        this.length = length;
-    }
-    
-    int getLength() {
-        return this.length;
+    int getWidth() {
+        return cases[0].length;
     }
 }

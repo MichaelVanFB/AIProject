@@ -1,38 +1,23 @@
 package battleships;
 
 public class GridPacker
-{
-    class ProbabilityCase extends Grid.Case {
-        
-        private float probabilityIsShip = 0.0f; // use floats to save space
-        
-        ProbabilityCase(float probability) {
-            this.probabilityIsShip = probability;
-        }
-        
-        float getProbabilityIsShip() {
-            return this.probabilityIsShip;
-        }
-        
-        void setProbabilityIsShip(float probability) {
-            this.probabilityIsShip = probability;
-        }
-    }
-    
+{    
     /**
      * The starting grid from which we calculate all the possible ship
-     * configurations.
+     * configurations. Once made the grid is final, but we can still make
+     * changes to the cases of the grid.
      */
-    private final Grid grid;
+    private final ProbabilityGrid grid;
     
     /**
      * An array of all the different possible configurations formed by placing
      * one more ship on the grid.
      */
-    private Grid[] possibleConfigurations;
+    private ProbabilityGrid[] possibleConfigurations;
     
     public GridPacker(Grid grid) {
-        this.grid = grid;
+        // set the grid
+        this.grid = new ProbabilityGrid(grid);
     }
     
     public Grid getGrid() {
