@@ -2,8 +2,25 @@ package battleships;
 
 public class Grid
 {
-    private class Case {
+    static class Case {
         
+        private CaseContents contents;
+        
+        Case(CaseContents contents) {
+            this.contents = contents;
+        }
+        
+        Case() {
+            this(CaseContents.UNKNOWN);
+        }
+        
+        CaseContents getContents() {
+            return this.contents;
+        }
+        
+        void setContents(CaseContents contents) {
+            this.contents = contents;
+        }
     }
     
     private Case[][] cases;
