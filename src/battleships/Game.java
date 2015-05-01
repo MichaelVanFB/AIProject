@@ -3,6 +3,7 @@ package battleships;
 
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,6 +24,7 @@ public class Game extends Application {
 	
 	private Ship[][] ships=new Ship[2][5];
 	
+	
 	/**
 	 * whole variables for CSS setting
 	 */
@@ -32,7 +34,7 @@ public class Game extends Application {
 	private String squareGridPaneStyleOnTouch="-fx-background-color: gray;\n";
 	private String scoreStyle[]={"-fx-background-color: red;\n","-fx-background-color: green;\n"};
 	
-	Label label[][]= new Label[10][21];
+	private Label label[][]= new Label[10][21];
 	
 	
 	private Player player0;
@@ -104,13 +106,14 @@ public class Game extends Application {
 		/**
 		 * set the player name according to the current player selected as parameter
 		 */
-		if(player==0){
+		if(player == 0){
 			vbox.getChildren().add(new Label("Player 1"));
 		}
 		
-		if(player==1){
+		if(player == 1){
 			vbox.getChildren().add(new Label("Player 2"));
 		}
+		
 		/**
 		 * label d'initialization
 		 */
@@ -150,16 +153,158 @@ public class Game extends Application {
 		label[labelPosition[0]][labelPosition[1]].setStyle(squareGridPaneStyleOnClick);
 	}
 	
-	
-	public GridPane addGridPane() {
+	public HBox addSpecialGridPane(Stage stage){
+		
+		Label label[][]= new Label[10][10];
 		
 		GridPane gridPane= new GridPane();
+		
+		/** 
+		 * General addShipSetting box who contains the gridPane and the shipSelectionBox
+		 */
+		HBox addShipSettingBox = new HBox();
+		gridPane.setAlignment(Pos.CENTER);
+		gridPane.setPadding(new Insets(15,15,15,15));
+		
+		/**
+		 * select a ship then pick an orientation, vertical, horizontal, size
+		 */
+		VBox shipSelectionBox= new VBox();
+		shipSelectionBox.setPadding(new Insets(5,5,5,5));
+		
+		shipSelectionBox.getChildren().add(new Label("Pick a ship"));
+		char shipOrientation='v';
+		int shipSelected=0;
+		
+		
+		Label[][] shipsToPickLabel= new Label[5][5];
+		
+		GridPane[] shipsGridPaneToPick = new GridPane[5];
+		
+		for(int i=0 ; i < 5 ; i++){
+			
+			shipsGridPaneToPick[i]=new GridPane();
+			// Set the the height gap between each label
+			shipsGridPaneToPick[i].setHgap(1);
+							
+			//Set the width gap between each label
+			shipsGridPaneToPick[i].setVgap(1);
+							
+			shipsGridPaneToPick[i].setAlignment(Pos.CENTER);
+			shipsGridPaneToPick[i].setPadding(new Insets(1,1,1,1));
+			shipsGridPaneToPick[i].setStyle(gridPaneStyle);
+			
+			int numberCase=0;
+			
+			if(i==0)
+				numberCase=2;
+			if(i==1)
+				numberCase=3;
+			if(i==2)
+				numberCase=3;
+			if(i==3)
+				numberCase=4;
+			if(i==4)
+				numberCase=5;
+			
+			for(int j=0 ; j < numberCase ; j++){
+				
+				shipsToPickLabel[i][j]=new Label("   ");
+				shipsToPickLabel[i][j].setStyle(squareGridPaneStyle);
+				shipsGridPaneToPick[i].add(shipsToPickLabel[i][j],j,i+1);
+				/**
+				 * handle each click which has been realized on a case of the ship selection labels
+				 */
+				final int IJ[]={i,j};
+				shipsToPickLabel[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+						//shipSelected=IJ[0];
+							
+					}
+					
+				});
+			}
+			shipSelectionBox.getChildren().add(shipsGridPaneToPick[i]);
+		}
+		shipSelectionBox.getChildren().add(new Label("Pick an orientation"));
+		
+		
 		/**
 		 * Set the the height gap between each label
 		 * Set the width gap between each label
 		 */
-		gridPane.setHgap(1); // Set the the height gap between each label
-		gridPane.setVgap(1); //Set the width gap between each label
+		// Set the the height gap between each label
+		gridPane.setHgap(1);
+		
+		//Set the width gap between each label
+		gridPane.setVgap(1);
+		
+		gridPane.setAlignment(Pos.CENTER);
+		gridPane.setPadding(new Insets(5,5,5,5));
+		gridPane.setStyle(gridPaneStyle);
+
+		
+		for(int i=0 ; i < 10 ; i++){
+			for(int j=0 ; j < 10 ; j++){
+				
+				label[i][j]=new Label("   ");
+				label[i][j].setStyle(squareGridPaneStyle);
+				gridPane.add(label[i][j],j,i+1);
+				
+				/**
+				 * handle each click which has been realized on a case
+				 */
+				final int IJ[]={i,j};
+				label[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+						/**
+						 * 
+						 *   DESTROYER (2),
+						 *   CRUISER (3),
+						 *   BATTLESHIP(4),
+						 *   CARRIER(5);
+						 */
+							
+						for(int i=0; i<2; i++){
+							if(shipSelected==0)
+								ships[i][0]=new Ship(ShipType.DESTROYER,shipOrientation,IJ[0],IJ[1]);
+							if(shipSelected==1)
+								ships[i][1]=new Ship(ShipType.CRUISER,shipOrientation,IJ[0],IJ[1]);
+							if(shipSelected==2)
+								ships[i][2]=new Ship(ShipType.CRUISER,shipOrientation,IJ[0],IJ[1]); 
+							if(shipSelected==3)
+								ships[i][3]=new Ship(ShipType.BATTLESHIP,shipOrientation,IJ[0],IJ[1]); 
+							if(shipSelected==4)
+								ships[i][4]=new Ship(ShipType.CARRIER,shipOrientation,IJ[0],IJ[1]); 
+						}
+					}
+					
+				});
+			}
+		}
+		
+		addShipSettingBox.getChildren().addAll(shipSelectionBox,gridPane);
+	    return addShipSettingBox;
+	}
+	
+	
+	public GridPane addGridPane() {
+		
+		GridPane gridPane= new GridPane();
+		
+		/**
+		 * Set the the height gap between each label
+		 * Set the width gap between each label
+		 */
+		
+		// Set the the height gap between each label
+		gridPane.setHgap(1); 
+		
+		//Set the width gap between each label
+		gridPane.setVgap(1); 
+		
 		gridPane.setAlignment(Pos.CENTER);
 		gridPane.setPadding(new Insets(5,5,5,5));
 		gridPane.setStyle(gridPaneStyle);
@@ -168,6 +313,9 @@ public class Game extends Application {
 		for(int i=0 ; i < 10 ; i++){
 			for(int j=0 ; j < 21 ; j++){
 				
+				/** 
+				 * Spit the grid in both
+				 */
 				if(j == 10){
 					label[i][j]=new Label(" | ");
 					gridPane.add(label[i][j],j,i+1);
@@ -263,23 +411,65 @@ public class Game extends Application {
 		}
 		if(sinkedShipsCount==5){
 			System.out.println("End");
-			//exit();
+			
 		}
 	}
-	public VBox addSettingPane(){
+	public void initializeShip(){
+		for(int i=0 ; i < 2; i++){
+			
+		}
+	}
+	public VBox addSettingPane(Stage stage){
 		
 		VBox settingPane=new VBox();
+		settingPane.setSpacing(10);
+	    settingPane.setAlignment(Pos.CENTER);
+	    
 		HBox buttons= new HBox();
-		buttons.setPadding(new Insets(5, 5, 5, 5));
+		buttons.setPadding(new Insets(1, 15, 1, 15));
 	    buttons.setSpacing(10);
+	    buttons.setAlignment(Pos.CENTER);
 	    
 	    Button onePlayer=new Button();
 	    Button multiPlayer=new Button();
 	    onePlayer.setText("one player");
 	    multiPlayer.setText("multi player");
 	    
-	    buttons.getChildren().addAll(onePlayer, multiPlayer);
+	    /**
+	     * setOnAction handling for onePlayer button
+	     */
+	    onePlayer.setOnAction(new EventHandler<ActionEvent>(){
+
+			@Override
+			public void handle(ActionEvent event) {
+				settingPane.getChildren().add(new Label("Please"));
+				
+				BorderPane gameSettingBorderPane=new BorderPane();
+				
+				gameSettingBorderPane.setTop(addTitle("BattleShips"));
+				
+				gameSettingBorderPane.setCenter(addSpecialGridPane(stage));
+				gameSettingBorderPane.setPadding(new Insets(5,5,5,5));
+				
+				Scene gameSettingScene=new Scene(gameSettingBorderPane);
+				stage.setScene(gameSettingScene);
+			    stage.show();
+			}
+			
+	    });
+	    /**
+	     * setOnAction handling for multiPlayer button
+	     */
+	    multiPlayer.setOnAction(new EventHandler<ActionEvent>(){
+
+			@Override
+			public void handle(ActionEvent event) {
+				
+			}
+	    	
+	    });
 	    
+	    buttons.getChildren().addAll(onePlayer, multiPlayer);
 	    
 	    Label consign=new Label ("Please set the player number");
 	    settingPane.getChildren().addAll(consign,buttons);
@@ -287,6 +477,12 @@ public class Game extends Application {
 	    return settingPane;
 	    
 	}
+	
+	/** 
+	 * call this method to display the optionsGameSetting as one player or multi player
+	 * @param stage
+	 * @return
+	 */
 	public boolean setGame(Stage stage){
 		
 		BorderPane gameSettingBorderPane=new BorderPane();
@@ -295,7 +491,7 @@ public class Game extends Application {
 		 * gameSettingBorderPane handling
 		 */
 		gameSettingBorderPane.setTop(addTitle("BattleShips"));
-		gameSettingBorderPane.setCenter(addSettingPane());
+		gameSettingBorderPane.setCenter(addSettingPane(stage));
 		gameSettingBorderPane.setPadding(new Insets(5,5,5,5));
 		
 		Scene gameSettingScene=new Scene(gameSettingBorderPane);
