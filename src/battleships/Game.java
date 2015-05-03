@@ -2,6 +2,9 @@ package battleships;
 
 
 
+
+import java.util.Random;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -49,8 +52,8 @@ public class Game extends Application {
 	private Player player0;
 	private Player player1;
 	
-	private Label shipSelectPosLabel[][]= new Label[10][10];
-
+	private Label shipSelectPosLabelPlayer0[][]= new Label[10][10];
+	private Label shipSelectPosLabelPlayer1[][]= new Label[10][10];
 	/**
 	 * Variable created to know on which ship the user has realized his click during the ship setting section
 	 */
@@ -170,15 +173,18 @@ public class Game extends Application {
 				
 				playButton.setOnAction(new EventHandler<ActionEvent>(){
 				
+					int shipId=0;
+					char randomShipOrientation;
+					
 					@Override
 					public void handle(ActionEvent arg0) {
-						// TODO Auto-generated method stub
+						
 						boolean playAction=false;
 						/**
 						 * know if all ships have been set
 						 * and if it is, launch the game
 						 */
-					for(int j=0 ; j < 5 ;j++){
+						for(int j=0 ; j < 5 ;j++){
 							if(ships[0][j].getSet()==false){
 								playAction=false;
 								break;
@@ -189,11 +195,8 @@ public class Game extends Application {
 						}
 						if(playAction==true){
 							
-							player0=new Player(0,"player1",shipSelectPosLabel);
-							player1=new Player(1,"computer",shipSelectPosLabel);
-							
-							ships[1]=ships[0];
-							casesPlayer1=casesPlayer0;
+							player0=new Player(0,"player1",shipSelectPosLabelPlayer0);
+							player1=new Player(1,"computer",shipSelectPosLabelPlayer1);
 							
 							BorderPane gameBorderPane= new BorderPane();
 							
@@ -212,7 +215,183 @@ public class Game extends Application {
 							stage.setScene(gameScene);
 						    stage.show();
 						}
+						/**
+						 * 
+						 * 
+						 * Setting computer ships positions by random
+						 * 
+						 */
+						
+						/**
+						 * refresh and create the labels
+						 */
+						for(int i=0 ; i < 10 ; i++){
+							for(int j=0 ; j < 10 ; j++){
+								
+								shipSelectPosLabelPlayer1[i][j]=new Label("   ");
+								shipSelectPosLabelPlayer1[i][j].setStyle(squareGridPaneStyle);
+							}
+				    	}
+						boolean setRandomlyAction=false;
+						
+						while(setRandomlyAction==false){
+							/**
+							 * know if all ships have been set
+							 * and if it is, launch the game
+							 */
+							for(int j=0 ; j < 5 ;j++){
+								if(ships[1][j].getSet()==false){
+									setRandomlyAction=false;
+									break;
+								}
+								else {
+									setRandomlyAction=true;
+								}
+							}
+							for(shipId = 0; shipId < 5 ; shipId++){
+								/** 
+								 * set orientation randomly
+								 */
+								Random r=new Random();
+								
+								int randomOrientation=r.nextInt(2);
+								
+								if(randomOrientation==0)
+									randomShipOrientation='v';
+								if(randomOrientation==1)
+									randomShipOrientation='h';
+								
+								if(randomShipOrientation!='n' && shipId!=-1 && ships[1][shipId].getSet()==false){
+									/** 
+									 * find x and y positions at random
+									 */
+									Random r2=new Random();
+
+									int randomPosX=r2.nextInt(10);
+									int randomPosY=r2.nextInt(10);
+									
+									if(isEmpty(randomPosX,randomPosY)==true){
+										if(randomShipOrientation=='v'){
+											/**
+											 * 
+											 *   DESTROYER (2),
+											 *   CRUISER1 (3),
+											 *   CRUISER2 (3),
+											 *   BATTLESHIP(4),
+											 *   CARRIER(5);
+											 */
+											/**
+											 * check if the case is reachable
+											 */	
+											boolean persistentAction=false;
+											
+											
+											for(int i=randomPosX;
+													i < randomPosX+ships[1][shipId].getSize() && i < 10
+													&& randomPosX+ships[1][shipId].getSize() -1 < 10 ; i++){
+												
+												int j=randomPosY;
+												shipSelectPosLabelPlayer1[i][j].setText("||||");
+												shipSelectPosLabelPlayer1[i][j].setStyle(backgroundSelect);
+												setCaseContents(ships[1][shipId],i,j);
+												persistentAction=true;
+											}
+											if(persistentAction==true)
+												setShip(1,shipId,randomPosX,randomPosY);
+										}
+										
+										if(randomShipOrientation=='h'){
+											/**
+											 * 
+											 *   DESTROYER (2),
+											 *   CRUISER1 (3),
+											 *   CRUISER2 (3),
+											 *   BATTLESHIP(4),
+											 *   CARRIER(5);
+											 */
+											/**
+											 * check if the case is reachable
+											 */
+											boolean persistentAction=false;
+											
+											for(int j=randomPosY;
+													j < randomPosY+ships[1][shipId].getSize() && j < 10
+													&& randomPosY+ships[1][shipId].getSize() -1 < 10 ; j++){
+												
+												int i=randomPosX;
+												shipSelectPosLabelPlayer1[i][j].setText("||||");
+												shipSelectPosLabelPlayer1[i][j].setStyle(backgroundSelect);
+												setCaseContents(ships[1][shipId],i,j);
+												persistentAction=true;
+											}
+											if(persistentAction==true)
+												setShip(1,shipId,randomPosX,randomPosY);
+										}
+									}
+								}
+							}
+						}
 					}
+
+					/** 
+					 * method to set each ship case's type contained in the grid
+					 * @param ship
+					 * @param i
+					 * @param j
+					 */
+					public void setCaseContents(Ship ship, int i, int j){
+
+						if(ship.getShipType()==ShipType.DESTROYER)
+							casesPlayer1[i][j].setContents(CaseContents.DESTROYER_CASE);
+						
+						if(ship.getShipType()==ShipType.CRUISER1)
+							casesPlayer1[i][j].setContents(CaseContents.CRUISER1_CASE);
+
+						if(ship.getShipType()==ShipType.CRUISER2)
+							casesPlayer1[i][j].setContents(CaseContents.CRUISER2_CASE);
+						
+						if(ship.getShipType()==ShipType.BATTLESHIP)
+							casesPlayer1[i][j].setContents(CaseContents.BATTLESHIP_CASE);
+						
+						if(ship.getShipType()==ShipType.CARRIER)
+							casesPlayer1[i][j].setContents(CaseContents.CARRIER_CASE);
+					}
+					public boolean isEmpty(int randomPosX, int randomPosY){
+						if(randomShipOrientation=='v'){
+							for(int i=randomPosX;
+									i < randomPosX+ships[1][shipId].getSize() && i < 10
+									&& randomPosX+ships[1][shipId].getSize() -1 < 10 ; i++){
+								
+								int j= randomPosY;
+								if(shipSelectPosLabelPlayer1[i][j].getText().toString().compareTo("||||")==0)
+									return false;
+							}
+						}
+						if(randomShipOrientation=='h'){
+							for(int j= randomPosY;
+									j <  randomPosY+ships[1][shipId].getSize() && j < 10
+									&&  randomPosY+ships[1][shipId].getSize() -1 < 10 ; j++){
+								
+								int i=randomPosX;
+								if(shipSelectPosLabelPlayer1[i][j].getText().toString().compareTo("||||")==0)
+									return false;
+							}
+						}
+						return true;
+					}
+					/**
+					 * adding of ships parameters which are orientation, posX, posY
+					 * @param shipOwner
+					 * @param shipNumber
+					 */
+					public void setShip(int shipOwner, int shipNumber, int randomPosX, int randomPosY ){
+						System.out.println("here"+randomPosX+"eddd"+randomPosY);
+						ships[shipOwner][shipNumber].setOrientation(randomShipOrientation);
+						ships[shipOwner][shipNumber].setPosX(randomPosX);
+						ships[shipOwner][shipNumber].setPosY(randomPosY);
+						ships[shipOwner][shipNumber].setSet();
+					}
+				
 				});
 				
 				shipSettingBorderPane.setBottom(play);
@@ -502,8 +681,8 @@ public class Game extends Application {
 									&& shipPosLabelIJ[0]+ships[0][shipSelected].getSize() -1 < 10 ; i++){
 								
 								int j=shipPosLabelIJ[1];
-								shipSelectPosLabel[i][j].setText("||||");
-								shipSelectPosLabel[i][j].setStyle(backgroundSelect);
+								shipSelectPosLabelPlayer0[i][j].setText("||||");
+								shipSelectPosLabelPlayer0[i][j].setStyle(backgroundSelect);
 								setCaseContents(ships[0][shipSelected],i,j);
 								persistentAction=true;
 							}
@@ -528,8 +707,8 @@ public class Game extends Application {
 									&& shipPosLabelIJ[1]+ships[0][shipSelected].getSize() -1 < 10 ; j++){
 								
 								int i=shipPosLabelIJ[0];
-								shipSelectPosLabel[i][j].setText("||||");
-								shipSelectPosLabel[i][j].setStyle(backgroundSelect);
+								shipSelectPosLabelPlayer0[i][j].setText("||||");
+								shipSelectPosLabelPlayer0[i][j].setStyle(backgroundSelect);
 								setCaseContents(ships[0][shipSelected],i,j);
 								persistentAction=true;
 							}
@@ -563,12 +742,11 @@ public class Game extends Application {
 					casesPlayer0[i][j].setContents(CaseContents.CARRIER_CASE);
 			}
 			public void setPersistent(){
-				for(int shipOwner=0; shipOwner<2; shipOwner++){
-					for(int shipNumber=0; shipNumber < 5; shipNumber++){
-						if(shipSelected == shipNumber)
-							setShip(shipOwner,shipNumber);
-					}
+				for(int shipNumber = 0; shipNumber < 5; shipNumber++){
+					if(shipSelected == shipNumber)
+						setShip(0,shipNumber);
 				}
+				
 			}
 			public boolean isEmpty(){
 				if(shipOrientation=='v'){
@@ -577,7 +755,7 @@ public class Game extends Application {
 							&& shipPosLabelIJ[0]+ships[0][shipSelected].getSize() -1 < 10 ; i++){
 						
 						int j=shipPosLabelIJ[1];
-						if(shipSelectPosLabel[i][j].getText().toString().compareTo("||||")==0)
+						if(shipSelectPosLabelPlayer0[i][j].getText().toString().compareTo("||||")==0)
 							return false;
 					}
 				}
@@ -587,7 +765,7 @@ public class Game extends Application {
 							&& shipPosLabelIJ[1]+ships[0][shipSelected].getSize() -1 < 10 ; j++){
 						
 						int i=shipPosLabelIJ[0];
-						if(shipSelectPosLabel[i][j].getText().toString().compareTo("||||")==0)
+						if(shipSelectPosLabelPlayer0[i][j].getText().toString().compareTo("||||")==0)
 							return false;
 					}
 				}
@@ -625,15 +803,15 @@ public class Game extends Application {
 		for(int i=0 ; i < 10 ; i++){
 			for(int j=0 ; j < 10 ; j++){
 				
-				shipSelectPosLabel[i][j]=new Label("   ");
-				shipSelectPosLabel[i][j].setStyle(squareGridPaneStyle);
-				gridPane.add(shipSelectPosLabel[i][j],j,i+1);
+				shipSelectPosLabelPlayer0[i][j]=new Label("   ");
+				shipSelectPosLabelPlayer0[i][j].setStyle(squareGridPaneStyle);
+				gridPane.add(shipSelectPosLabelPlayer0[i][j],j,i+1);
 				
 				/**
 				 * handle each click which has been realized on a case
 				 */
 				final int IJ[]={i,j};
-				shipSelectPosLabel[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
+				shipSelectPosLabelPlayer0[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent mouseEvent) {
 						
@@ -650,10 +828,10 @@ public class Game extends Application {
 						 */
 						for(int i=0;i<10;i++){
 							for(int j=0;j<10;j++){
-								shipSelectPosLabel[i][j].setStyle(squareGridPaneStyle);
+								shipSelectPosLabelPlayer0[i][j].setStyle(squareGridPaneStyle);
 							}
 						}
-						shipSelectPosLabel[labelPosition[0]][labelPosition[1]].setStyle(backgroundSelect);
+						shipSelectPosLabelPlayer0[labelPosition[0]][labelPosition[1]].setStyle(backgroundSelect);
 					}
 				});
 			}
