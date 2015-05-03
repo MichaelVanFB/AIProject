@@ -6,17 +6,20 @@ import java.util.ListIterator;
 public class Grid<E extends Case>
 {   
     /**
-     * Can be a 2D array of Case or Probability case.
+     * A 2D array of Case or ProbabilityCase instances.
      */
     protected E[][] cases;
  
-    // constructor to make a blank grid
+    /**
+     * constructor to make a blank grid of known dimensions.
+     */
     Grid(int height, int width) {
         cases = (E[][]) new Object[height][width];
     }
     
     /**
      * Constructor to make a grid that is a copy of another.
+     * 
      * We want to make copies (not clones!) of each case in the grid.
      */
     Grid(Grid<E> grid) {
