@@ -1,17 +1,18 @@
 package battleships;
 
+import java.util.ArrayList;
+import java.util.ListIterator;
+
 public class Grid<E extends Case>
 {   
     /**
-     * cases can be a 2D array of Case or Probability case.
-     * It can be final as Case instances won't be added/deleted or moved,
-     * only the contents of each Case will be changed.
+     * Can be a 2D array of Case or Probability case.
      */
-    protected final E[][] cases;
+    protected E[][] cases;
     
-    
+    protected ArrayList<ArrayList<Coordinates>> knownCasesByType;
  
-    // contrsuctor to make a blank grid
+    // constructor to make a blank grid
     Grid(int height, int width) {
         cases = (E[][]) new Object[height][width];
     }
@@ -30,6 +31,9 @@ public class Grid<E extends Case>
                 this.cases[i][j] = (E) grid.cases[i][j].copy();
             }
         }
+        // copy the coordinates of the known ship cases
+        this.knownCasesByType = grid.knownCasesByType;
+        
     }
     
     E getCase(int row, int column) {
@@ -39,7 +43,9 @@ public class Grid<E extends Case>
         return cases[row][column];
     }
     
-    
+    void setCase(int row, int column, E newCase) {
+        this.cases[row][column] = newCase;
+    }
     
     int getHeight() {
         return cases.length;
@@ -49,9 +55,26 @@ public class Grid<E extends Case>
         return cases[0].length;
     }
     
+    ArrayList<ArrayList<Coordinates>> getKnownCasesByType() {
+        return this.knownCasesByType;
+    }
+    
+    ArrayList<Coordinates> getKnownCasesByType(int index) {
+        return this.knownCasesByType.get(index);
+    }
+    
+    void addKnownCase(int typeIndex, Coordinates coords) {
+        this.knownCasesByType.get(typeIndex).add(coords);
+    }
+    
+    void addKnownCase(ShipType type, Coordinates coords) {
+        int typeIndex = type.getLength() - 2;
+        this.knownCasesByType.get(typeIndex).add(coords);
+    }
+    
     boolean isEmpty() {
         for (int i = 0; i < this.getHeight(); i++) {
-            for (int j = 0; j < this.getHeight(); j++) {
+            for (int j = 0; j < this.getWidth(); j++) {
                 if (cases[i][j].getContents() != CaseContents.UNKNOWN) {
                     return false;
                 }
@@ -60,36 +83,18 @@ public class Grid<E extends Case>
         return true;
     }
     
-    boolean placeShipAt(ShipType type, char orientation, int row, int column) {
-        // we have already checked the case isn't ocean (i.e. missed shot), so
-        // the first step is to make sure that it is legal to place a new ship
-        // of the given type
-        
-        // Next we make sure placing the ship in the given orientation would not
-        // go over the border
-        if (
-            (
-                orientation == 'v' &&
-                (
-                    (row >= getHeight()) ||
-                    getHeight() - row - 1 < type.getLength()
-                )
-            ) ||
-            (
-                orientation == 'h' &&
-                (
-                    (column >= getWidth()) ||
-                    getWidth() - column - 1 < type.getLength()
-                )
-            )    
-        ) {
-            return false;
+    /**
+     * Have all the ships been found?
+     * @return 
+     */
+    boolean isFull() {
+        // check the number of known coordinates of each type
+        ListIterator<ArrayList<Coordinates>> typeIter = this.knownCasesByType.listIterator();
+        int numShipCases = 0;
+        while (typeIter.hasNext()) {
+            ArrayList<Coordinates> shipCases = typeIter.next();
+            numShipCases += shipCases.size();
         }
-        // now we must check whether
-        return true;
-    }
-    
-    boolean canAddShipType(ShipType type) {
-        return false;
-    }
+        return numShipCases == 17;
+    } 
 }

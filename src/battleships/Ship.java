@@ -80,4 +80,16 @@ enum ShipType {
     int getLength() {
         return this.length;
     }
+    
+    CaseContents convertToCaseContents() {
+        CaseContents result;
+        switch(length){
+            case 2 : result = CaseContents.HIT_DESTROYER; break;
+            case 3 : result = CaseContents.HIT_CRUISER; break;
+            case 4 : result = CaseContents.HIT_BATTLESHIP; break;
+            case 5 : result = CaseContents.HIT_CARRIER; break;
+            default : result = CaseContents.UNKNOWN; break;
+        }
+        return result;
+    }
 }
