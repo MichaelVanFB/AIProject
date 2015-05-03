@@ -8,6 +8,7 @@ public class Ship {
 	private int size;
 	private int shotCount=0;
 	private boolean sinked=false;
+	private boolean set=false;
 	
 	public Ship(ShipType type, char orientation, int posX,int posY){
 		this.type=type;
@@ -16,14 +17,28 @@ public class Ship {
 		this.posY=posY;
 		this.size=type.getLength();
 	}
+	
+	public Ship(ShipType type){
+		this.type=type;
+		this.size=type.getLength();
+	}
 	public int getShotCount(){
 		return shotCount;
 	}
 	public void setShotCount(int shotCount){
 		this.shotCount=shotCount;
 	}
+	public void setOrientation(char orientation){
+		this.orientation=orientation;
+	}
+	public void setPosX(int posX){
+		this.posX=posX;
+	}
 	public int getPosX(){
 		return this.posX;
+	}
+	public void setPosY(int posY){
+		this.posY=posY;
 	}
 	public int getPosY(){
 		return this.posY;
@@ -37,7 +52,12 @@ public class Ship {
 	public void setSinked(){
 		this.sinked=true;
 	}
-	
+	public boolean getSet(){
+		return this.set;
+	}
+	public void setSet(){
+		this.set=true;
+	}
 }
 
 enum ShipType {

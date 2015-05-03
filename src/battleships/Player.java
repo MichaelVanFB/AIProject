@@ -1,13 +1,15 @@
 package battleships;
 
+import javafx.scene.control.Label;
+
 public class Player {
 	private int id;
 	private String name;
-	private String[][] grid = new String [10][10];
+	private Label[][] grid = new Label [10][10];
 	private Ship[] ships= new Ship[5];
 	private int score;
 	
-	public Player(int id, String name, String[][] grid){
+	public Player(int id, String name, Label[][] grid){
 		this.id=id;
 		this.name=name;
 		this.grid=grid;
@@ -22,6 +24,12 @@ public class Player {
 	public void setName(String name){
 		this.name=name;
 	}
+	public Label[][] getGrid(){
+		return this.grid;
+	}
+	public void setGrid(Label [][] grid){
+		this.grid=grid;
+	}
 	public Ship[] getShips(){
 		return ships;
 	}
@@ -33,8 +41,5 @@ public class Player {
 	}
 	public int getScore(){
 		return this.score;
-	}
-	public void setGrid(String [][] grid){
-		this.grid=grid;
 	}
 }
