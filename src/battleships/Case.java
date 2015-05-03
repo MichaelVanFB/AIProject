@@ -31,7 +31,12 @@ enum CaseContents {
     HIT_DESTROYER(ShipType.DESTROYER),
     HIT_CRUISER(ShipType.CRUISER),
     HIT_BATTLESHIP(ShipType.BATTLESHIP),
-    HIT_CARRIER(ShipType.CARRIER);
+    HIT_CARRIER(ShipType.CARRIER),
+    DESTROYER_CASE(ShipType.DESTROYER),
+    CRUISER1_CASE(ShipType.CRUISER1),
+    CRUISER2_CASE(ShipType.CRUISER2),
+    BATTLESHIP_CASE(ShipType.BATTLESHIP),
+    CARRIER_CASE(ShipType.CARRIER);
     
     private final ShipType shipType;
     
