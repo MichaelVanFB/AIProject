@@ -24,10 +24,17 @@ public class Game extends Application {
 	
 	private Ship[][] ships=new Ship[2][5];
 	
+	private boolean playAction=false;
+	
 	
 	/**
 	 * whole variables for CSS setting
 	 */
+	private String backgroundNull="-fx-background-color: transparent;\n";
+	private String backgroundSelect="-fx-background-color: gray;\n";
+	private String orientationChoiceBackgroung="-fx-background-color: gray;\n";
+	private String shipPickingSquareGridPaneStyleOnClick="-fx-background-color: gray;\n";
+
 	private String gridPaneStyle="-fx-border-color: black;\n";
 	private String squareGridPaneStyle="-fx-border-color: black;\n";
 	private String squareGridPaneStyleOnClick="-fx-background-color: transparent;\n";
@@ -40,16 +47,169 @@ public class Game extends Application {
 	private Player player0;
 	private Player player1;
 	
+	private Label shipSelectPosLabel[][]= new Label[10][10];
+
+	/**
+	 * Variable created to know on which ship the user has realized his click during the ship setting section
+	 */
+	int shipSelected=-1;
 	
+	char shipOrientation='n';
 	
-	
+	int shipPosLabelIJ[]=new int[2];
+
 	
 	@Override
 	public void start (Stage stage) throws Exception {
 		
-		boolean gameSet=setGame(stage);
+		setGame(stage);
 		
-		if(gameSet==true){
+		/**
+	     * ship initialization
+		 * 
+		 *   DESTROYER (2),
+		 *   CRUISER (3),
+		 *   BATTLESHIP(4),
+		 *   CARRIER(5);
+		 */
+			
+		for(int i=0; i < 2; i++){
+				ships[i][0]=new Ship(ShipType.DESTROYER);
+				ships[i][1]=new Ship(ShipType.CRUISER);
+				ships[i][2]=new Ship(ShipType.CRUISER);
+				ships[i][3]=new Ship(ShipType.BATTLESHIP); 
+				ships[i][4]=new Ship(ShipType.CARRIER);
+		}
+	}
+
+	
+	/** 
+	 * call this method to display the optionsGameSetting as one player or multi player
+	 * @param stage
+	 * @return
+	 */
+	public void setGame(Stage stage){
+		
+		BorderPane gameSettingBorderPane=new BorderPane();
+		
+		/**
+		 * gameSettingBorderPane handling
+		 */
+		gameSettingBorderPane.setTop(addTitle("BattleShips"));
+		gameSettingBorderPane.setCenter(addSettingPane(stage));
+		gameSettingBorderPane.setPadding(new Insets(5,5,5,5));
+		
+		Scene gameSettingScene=new Scene(gameSettingBorderPane);
+		stage.setScene(gameSettingScene);
+	    stage.show();
+		
+	}
+	public static void main(String[]args){
+		launch(args);
+		
+	}
+	/**
+	 * method called by setGame to display the ships board setting on the grid
+	 * @param stage
+	 * @return
+	 */
+	public VBox addSettingPane(Stage stage){
+		
+		VBox settingPane=new VBox();
+		settingPane.setSpacing(10);
+	    settingPane.setAlignment(Pos.CENTER);
+	    
+		HBox buttons= new HBox();
+		buttons.setPadding(new Insets(1, 15, 1, 15)); //top right bottom left
+	    buttons.setSpacing(10);
+	    buttons.setAlignment(Pos.CENTER);
+	    
+	    Button onePlayer=new Button();
+	    Button multiPlayer=new Button();
+	    onePlayer.setText("one player");
+	    multiPlayer.setText("multi player");
+	    
+	    /**
+	     * setOnAction handling for onePlayer button
+	     */
+	    onePlayer.setOnAction(new EventHandler<ActionEvent>(){
+
+			@Override
+			public void handle(ActionEvent event) {
+				settingPane.getChildren().add(new Label("Please"));
+				
+				BorderPane shipPickingBorderPane=new BorderPane();
+				
+				
+				shipPickingBorderPane.setTop(addTitle("BattleShips"));
+				
+				shipPickingBorderPane.setCenter(addSpecialGridPane(stage));
+				
+				/**
+				 * Launch the game by clicking on the play button
+				 * if all ships have been set, hence, the game will start
+				 */
+				Button playButton =new Button ("play");
+				playButton.setAlignment(Pos.CENTER);
+				
+				VBox play=new VBox();
+				play.setAlignment(Pos.CENTER);
+				play.setPadding(new Insets(15,5,15,5)); //top right bottom left
+				play.getChildren().add(playButton);
+				
+				playButton.setOnAction(new EventHandler<ActionEvent>(){
+				
+					@Override
+					public void handle(ActionEvent arg0) {
+						// TODO Auto-generated method stub
+						boolean canPlayAction=false;
+						/**
+						 * know if all ships have been set
+						 * and if it is, launch the game
+						 */
+						for(int j=0 ; j < 5 ;j++){
+							if(ships[0][j].getSet()==false){
+								canPlayAction=false;
+								break;
+							}
+							else {
+								canPlayAction=true;
+							}
+						}
+						if(canPlayAction==true)
+							playAction=true;
+					}
+				});
+				
+				shipPickingBorderPane.setBottom(play);
+				shipPickingBorderPane.setPadding(new Insets(5,5,5,5));
+				
+				Scene shipPickingScene=new Scene(shipPickingBorderPane);
+				stage.setScene(shipPickingScene);
+			    stage.show();
+			}
+			
+	    });
+	    
+	    /**
+	     * setOnAction handling for multiPlayer button
+	     */
+	    multiPlayer.setOnAction(new EventHandler<ActionEvent>(){
+
+			@Override
+			public void handle(ActionEvent event) {
+				
+			}
+	    	
+	    });
+	    
+	    buttons.getChildren().addAll(onePlayer, multiPlayer);
+	    
+	    Label consign=new Label ("Please set the player number");
+	    settingPane.getChildren().addAll(consign,buttons);
+	    
+
+		if(playAction==true){
 			BorderPane gameBorderPane= new BorderPane();
 			
 			/**
@@ -63,17 +223,16 @@ public class Game extends Application {
 					
 			Group root = new Group();
 			
-			//Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-			
-			//stage.setScene(new Scene(root, primaryScreenBounds.getWidth(),
-			//		primaryScreenBounds.getHeight()));
-			
 			Scene gameScene=new Scene(gameBorderPane);
 			stage.setScene(gameScene);
 		    stage.show();
+		    
+		    
 		}
+	    
+	    return settingPane;
+	    
 	}
-	
 	
 	/**
 	 * call this method to set a title to the window but inside the borderPage object
@@ -127,7 +286,7 @@ public class Game extends Application {
 		 * of the current player, which are displayed on the screen
 		 */
 		HBox scoreBox= new HBox();
-		scoreBox.setPadding(new Insets(5, 5, 5, 5));
+		scoreBox.setPadding(new Insets(5, 5, 5, 5)); //top right bottom left
 	    scoreBox.setSpacing(10);
 	    
 	    /**
@@ -144,95 +303,257 @@ public class Game extends Application {
 		
 		vbox.getChildren().add(scoreBox);
 		vbox.setAlignment(Pos.CENTER);
-		vbox.setPadding(new Insets(0,20,0,20));
+		vbox.setPadding(new Insets(0,20,0,20)); //top right bottom left
 		return vbox;
 	}
 	
-	public void labelEffect(int[] labelPosition){
-		
-		label[labelPosition[0]][labelPosition[1]].setStyle(squareGridPaneStyleOnClick);
-	}
 	
 	public HBox addSpecialGridPane(Stage stage){
 		
-		Label label[][]= new Label[10][10];
 		
 		GridPane gridPane= new GridPane();
+		
+		Label[][] shipsSelectionLabel= new Label[5][5];
+		
+		GridPane[] shipsGridPaneSelection = new GridPane[5];
 		
 		/** 
 		 * General addShipSetting box who contains the gridPane and the shipSelectionBox
 		 */
 		HBox addShipSettingBox = new HBox();
 		gridPane.setAlignment(Pos.CENTER);
-		gridPane.setPadding(new Insets(15,15,15,15));
+		gridPane.setPadding(new Insets(15,15,15,15)); //top right bottom left
 		
 		/**
 		 * select a ship then pick an orientation, vertical, horizontal, size
 		 */
 		VBox shipSelectionBox= new VBox();
-		shipSelectionBox.setPadding(new Insets(5,5,5,5));
+		shipSelectionBox.setPadding(new Insets(5,5,5,5)); //top right bottom left
 		
-		shipSelectionBox.getChildren().add(new Label("Pick a ship"));
-		char shipOrientation='v';
-		int shipSelected=0;
+		Label pickAShip=new Label("Pick a ship");
+		pickAShip.setPadding(new Insets(5,0,5,0));
+		shipSelectionBox.getChildren().add(pickAShip);
 		
 		
-		Label[][] shipsToPickLabel= new Label[5][5];
 		
-		GridPane[] shipsGridPaneToPick = new GridPane[5];
-		
-		for(int i=0 ; i < 5 ; i++){
+		for(int i = 0 ; i < 5 ; i++){
 			
-			shipsGridPaneToPick[i]=new GridPane();
+			shipsGridPaneSelection[i]=new GridPane();
 			// Set the the height gap between each label
-			shipsGridPaneToPick[i].setHgap(1);
+			shipsGridPaneSelection[i].setHgap(1);
 							
 			//Set the width gap between each label
-			shipsGridPaneToPick[i].setVgap(1);
+			shipsGridPaneSelection[i].setVgap(1);
 							
-			shipsGridPaneToPick[i].setAlignment(Pos.CENTER);
-			shipsGridPaneToPick[i].setPadding(new Insets(1,1,1,1));
-			shipsGridPaneToPick[i].setStyle(gridPaneStyle);
+			shipsGridPaneSelection[i].setAlignment(Pos.CENTER);
+			shipsGridPaneSelection[i].setPadding(new Insets(1,1,1,1));
+			shipsGridPaneSelection[i].setStyle(gridPaneStyle);
 			
-			int numberCase=0;
-			
-			if(i==0)
-				numberCase=2;
-			if(i==1)
-				numberCase=3;
-			if(i==2)
-				numberCase=3;
-			if(i==3)
-				numberCase=4;
-			if(i==4)
-				numberCase=5;
-			
-			for(int j=0 ; j < numberCase ; j++){
+			/** 
+			 * Retrieve each ship size to set exactly its case case according to its size
+			 */
+			for(int j=0 ; j < ships[0][i].getSize() ; j++){
 				
-				shipsToPickLabel[i][j]=new Label("   ");
-				shipsToPickLabel[i][j].setStyle(squareGridPaneStyle);
-				shipsGridPaneToPick[i].add(shipsToPickLabel[i][j],j,i+1);
+				shipsSelectionLabel[i][j]=new Label("   ");
+				shipsSelectionLabel[i][j].setStyle(squareGridPaneStyle);
+				shipsGridPaneSelection[i].add(shipsSelectionLabel[i][j],j,i+1);
+				
 				/**
 				 * handle each click which has been realized on a case of the ship selection labels
 				 */
 				final int IJ[]={i,j};
-				shipsToPickLabel[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
+				shipsSelectionLabel[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent mouseEvent) {
-						//shipSelected=IJ[0];
-							
+						shipSelected=IJ[0];
+
+						labelEffectShipPicking(IJ);
+					}
+					public void labelEffectShipPicking(int[] labelPosition){
+						/**
+						 * before withdraw selection of another ship if there is
+						 */
+						for(int i=0;i<5;i++){
+							for(int j=0;j<ships[0][i].getSize();j++){
+								shipsSelectionLabel[i][j].setStyle(squareGridPaneStyle);
+							}
+						}
+						for(int j=0;j<ships[0][IJ[0]].getSize();j++){
+							shipsSelectionLabel[IJ[0]][j].setStyle(shipPickingSquareGridPaneStyleOnClick);
+						}
 					}
 					
 				});
 			}
-			shipSelectionBox.getChildren().add(shipsGridPaneToPick[i]);
+			shipSelectionBox.getChildren().add(shipsGridPaneSelection[i]);
 		}
-		shipSelectionBox.getChildren().add(new Label("Pick an orientation"));
 		
+		Label orientation=new Label("Pick an orientation");
+		orientation.setPadding(new Insets(5,0,5,0)); //top right bottom left
+		shipSelectionBox.getChildren().add(orientation);
+		
+		/** 
+		 * orientation choice handling inside a HBox 
+		 */
+		HBox shipOrientationBox=new HBox();
+		shipOrientationBox.setAlignment(Pos.CENTER);
+		shipOrientationBox.setPadding(new Insets(5,5,5,5));
+		
+		Label verticalArrow=new Label("\u2193");
+		Label horizontalArrow=new Label("\u2192");
+		
+		horizontalArrow.setPadding(new Insets(5,5,5,5));
+		verticalArrow.setPadding(new Insets(5,5,5,5));
 		
 		/**
-		 * Set the the height gap between each label
-		 * Set the width gap between each label
+		 * handle the click on the orientation arrow in order to
+		 * set the orientation char variable v
+		 */
+		verticalArrow.setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				labelEffectShipOrientationPicking();
+				shipOrientation='v';
+			}
+			public void labelEffectShipOrientationPicking(){
+				/**
+				 * before withdraw selection of the over orientation it's set
+				 */
+				horizontalArrow.setStyle(backgroundNull);
+				verticalArrow.setStyle(orientationChoiceBackgroung);
+			}
+			
+		});
+		horizontalArrow.setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				labelEffectShipOrientationPicking();
+				shipOrientation='h';
+			}
+			public void labelEffectShipOrientationPicking(){
+				/**
+				 * before withdraw selection of the over orientation it's set
+				 */
+				verticalArrow.setStyle(backgroundNull);
+				horizontalArrow.setStyle(orientationChoiceBackgroung);
+			}
+			
+		});
+		
+		shipOrientationBox.getChildren().addAll(verticalArrow,horizontalArrow);
+		
+		/**
+		 * main object add in ship add VBox
+		 */
+		Button addButton = new Button("add");
+		addButton.setAlignment(Pos.CENTER);
+		
+		VBox add=new VBox();
+		add.setAlignment(Pos.CENTER);
+		add.setPadding(new Insets(5,5,5,5));
+		add.getChildren().add(addButton);
+		addButton.setOnAction(new EventHandler<ActionEvent>(){
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				if(shipOrientation!='n' && shipSelected!=-1){
+					if(shipOrientation=='v'){
+						
+						if(isEmpty(shipOrientation)==true){
+							/**
+							 * 
+							 *   DESTROYER (2),
+							 *   CRUISER (3),
+							 *   BATTLESHIP(4),
+							 *   CARRIER(5);
+							 */
+								
+							for(int shipOwner=0; shipOwner<2; shipOwner++){
+								for(int shipNumber=0; shipNumber < 5; shipNumber++){
+									if(shipSelected == shipNumber)
+										setShip(shipOwner,shipNumber);
+								}
+							}
+							for(int i=ships[0][shipSelected].getPosX();
+									i < ships[0][shipSelected].getPosX()+ships[0][shipSelected].getSize() && i < 10
+									&& ships[0][shipSelected].getPosX()+ships[0][shipSelected].getSize() <=10 ; i++){
+								int j=ships[0][shipSelected].getPosY();
+								shipSelectPosLabel[i][j].setText("||||");
+								shipSelectPosLabel[i][j].setStyle(backgroundSelect);
+							}
+						}
+					}
+					if(shipOrientation=='h'){
+						
+						if(isEmpty(shipOrientation)==true){
+							/**
+							 * 
+							 *   DESTROYER (2),
+							 *   CRUISER (3),
+							 *   BATTLESHIP(4),
+							 *   CARRIER(5);
+							 */
+								
+							for(int shipOwner=0; shipOwner<2; shipOwner++){
+								for(int shipNumber=0; shipNumber < 5; shipNumber++){
+									if(shipSelected == shipNumber)
+										setShip(shipOwner,shipNumber);
+								}
+							}
+							for(int j=ships[0][shipSelected].getPosY();
+									j < ships[0][shipSelected].getPosY()+ships[0][shipSelected].getSize() && j < 10
+									&& ships[0][shipSelected].getPosY()+ships[0][shipSelected].getSize() <=10 ; j++){
+								int i=ships[0][shipSelected].getPosX();
+								shipSelectPosLabel[i][j].setText("||||");
+								shipSelectPosLabel[i][j].setStyle(backgroundSelect);
+							}
+						}
+					}
+				}
+			}
+			public boolean isEmpty(char orientation){
+				if(orientation=='v'){
+					for(int i=ships[0][shipSelected].getPosX();
+							i < ships[0][shipSelected].getPosX()+ships[0][shipSelected].getSize() && i < 10
+							&& ships[0][shipSelected].getPosX()+ships[0][shipSelected].getSize() <=10 ; i++){
+						int j=ships[0][shipSelected].getPosY();
+						if(shipSelectPosLabel[i][j].getText().toString().compareTo("||||")==0)
+							return false;
+					}
+				}
+				if(orientation=='h'){
+					for(int j=ships[0][shipSelected].getPosY();
+							j < ships[0][shipSelected].getPosY()+ships[0][shipSelected].getSize() && j < 10
+							&& ships[0][shipSelected].getPosY()+ships[0][shipSelected].getSize() <=10 ; j++){
+						int i=ships[0][shipSelected].getPosX();
+						if(shipSelectPosLabel[i][j].getText().toString().compareTo("||||")==0)
+							return false;
+					}
+				}
+				return true;
+				
+			}
+			/**
+			 * adding of ships parameters which are orientation, posX, posY
+			 * @param shipOwner
+			 * @param shipNumber
+			 */
+			public void setShip(int shipOwner, int shipNumber){
+				ships[shipOwner][shipNumber].setOrientation(shipOrientation);
+				ships[shipOwner][shipNumber].setPosX(shipPosLabelIJ[0]);
+				ships[shipOwner][shipNumber].setPosY(shipPosLabelIJ[1]);
+				ships[shipOwner][shipNumber].setSet();
+			}
+		});
+		shipSelectionBox.getChildren().addAll(shipOrientationBox,add);
+		
+		/**
+		 * handle the ship's setting position on the grid
 		 */
 		// Set the the height gap between each label
 		gridPane.setHgap(1);
@@ -248,39 +569,36 @@ public class Game extends Application {
 		for(int i=0 ; i < 10 ; i++){
 			for(int j=0 ; j < 10 ; j++){
 				
-				label[i][j]=new Label("   ");
-				label[i][j].setStyle(squareGridPaneStyle);
-				gridPane.add(label[i][j],j,i+1);
+				shipSelectPosLabel[i][j]=new Label("   ");
+				shipSelectPosLabel[i][j].setStyle(squareGridPaneStyle);
+				gridPane.add(shipSelectPosLabel[i][j],j,i+1);
 				
 				/**
 				 * handle each click which has been realized on a case
 				 */
 				final int IJ[]={i,j};
-				label[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
+				shipSelectPosLabel[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent mouseEvent) {
+						
+						/** set label to selected with a color */
+						shipLabelEffect(IJ);
 						/**
-						 * 
-						 *   DESTROYER (2),
-						 *   CRUISER (3),
-						 *   BATTLESHIP(4),
-						 *   CARRIER(5);
+						 * set the current position of the selected label
 						 */
-							
-						for(int i=0; i<2; i++){
-							if(shipSelected==0)
-								ships[i][0]=new Ship(ShipType.DESTROYER,shipOrientation,IJ[0],IJ[1]);
-							if(shipSelected==1)
-								ships[i][1]=new Ship(ShipType.CRUISER,shipOrientation,IJ[0],IJ[1]);
-							if(shipSelected==2)
-								ships[i][2]=new Ship(ShipType.CRUISER,shipOrientation,IJ[0],IJ[1]); 
-							if(shipSelected==3)
-								ships[i][3]=new Ship(ShipType.BATTLESHIP,shipOrientation,IJ[0],IJ[1]); 
-							if(shipSelected==4)
-								ships[i][4]=new Ship(ShipType.CARRIER,shipOrientation,IJ[0],IJ[1]); 
-						}
+						shipPosLabelIJ=IJ;
 					}
-					
+					public void shipLabelEffect(int[] labelPosition){
+						/**
+						 * before withdraw selection of another ship if there is
+						 */
+						for(int i=0;i<10;i++){
+							for(int j=0;j<10;j++){
+								shipSelectPosLabel[i][j].setStyle(squareGridPaneStyle);
+							}
+						}
+						shipSelectPosLabel[labelPosition[0]][labelPosition[1]].setStyle(backgroundSelect);
+					}
 				});
 			}
 		}
@@ -306,7 +624,7 @@ public class Game extends Application {
 		gridPane.setVgap(1); 
 		
 		gridPane.setAlignment(Pos.CENTER);
-		gridPane.setPadding(new Insets(5,5,5,5));
+		gridPane.setPadding(new Insets(5,5,5,5)); //top right bottom left
 		gridPane.setStyle(gridPaneStyle);
 
 		
@@ -387,6 +705,10 @@ public class Game extends Application {
 							}
 						}
 					}
+					public void labelEffect(int[] labelPosition){
+						
+						label[labelPosition[0]][labelPosition[1]].setStyle(squareGridPaneStyleOnClick);
+					}
 					
 				});
 			}
@@ -414,95 +736,5 @@ public class Game extends Application {
 			
 		}
 	}
-	public void initializeShip(){
-		for(int i=0 ; i < 2; i++){
-			
-		}
-	}
-	public VBox addSettingPane(Stage stage){
-		
-		VBox settingPane=new VBox();
-		settingPane.setSpacing(10);
-	    settingPane.setAlignment(Pos.CENTER);
-	    
-		HBox buttons= new HBox();
-		buttons.setPadding(new Insets(1, 15, 1, 15));
-	    buttons.setSpacing(10);
-	    buttons.setAlignment(Pos.CENTER);
-	    
-	    Button onePlayer=new Button();
-	    Button multiPlayer=new Button();
-	    onePlayer.setText("one player");
-	    multiPlayer.setText("multi player");
-	    
-	    /**
-	     * setOnAction handling for onePlayer button
-	     */
-	    onePlayer.setOnAction(new EventHandler<ActionEvent>(){
-
-			@Override
-			public void handle(ActionEvent event) {
-				settingPane.getChildren().add(new Label("Please"));
-				
-				BorderPane gameSettingBorderPane=new BorderPane();
-				
-				gameSettingBorderPane.setTop(addTitle("BattleShips"));
-				
-				gameSettingBorderPane.setCenter(addSpecialGridPane(stage));
-				gameSettingBorderPane.setPadding(new Insets(5,5,5,5));
-				
-				Scene gameSettingScene=new Scene(gameSettingBorderPane);
-				stage.setScene(gameSettingScene);
-			    stage.show();
-			}
-			
-	    });
-	    /**
-	     * setOnAction handling for multiPlayer button
-	     */
-	    multiPlayer.setOnAction(new EventHandler<ActionEvent>(){
-
-			@Override
-			public void handle(ActionEvent event) {
-				
-			}
-	    	
-	    });
-	    
-	    buttons.getChildren().addAll(onePlayer, multiPlayer);
-	    
-	    Label consign=new Label ("Please set the player number");
-	    settingPane.getChildren().addAll(consign,buttons);
-	    
-	    return settingPane;
-	    
-	}
 	
-	/** 
-	 * call this method to display the optionsGameSetting as one player or multi player
-	 * @param stage
-	 * @return
-	 */
-	public boolean setGame(Stage stage){
-		
-		BorderPane gameSettingBorderPane=new BorderPane();
-		
-		/**
-		 * gameSettingBorderPane handling
-		 */
-		gameSettingBorderPane.setTop(addTitle("BattleShips"));
-		gameSettingBorderPane.setCenter(addSettingPane(stage));
-		gameSettingBorderPane.setPadding(new Insets(5,5,5,5));
-		
-		Scene gameSettingScene=new Scene(gameSettingBorderPane);
-		stage.setScene(gameSettingScene);
-	    stage.show();
-		
-	    
-	    return false;
-	}
-	public static void main(String[]args){
-		launch(args);
-		
-	}
 }
