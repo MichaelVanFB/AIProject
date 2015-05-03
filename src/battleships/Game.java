@@ -24,6 +24,10 @@ public class Game extends Application {
 	
 	private Ship[][] ships=new Ship[2][5];
 	
+	Case[][] casesPlayer0=new Case[10][10];
+	Case[][] casesPlayer1=new Case[10][10];
+
+	
 	
 	/**
 	 * whole variables for CSS setting
@@ -39,8 +43,8 @@ public class Game extends Application {
 	private String squareGridPaneStyleOnTouch="-fx-background-color: gray;\n";
 	private String scoreStyle[]={"-fx-background-color: red;\n","-fx-background-color: green;\n"};
 	
-	private Label label[][]= new Label[10][21];
-	
+	private Label[][] gridPlayer0= new Label[10][10];
+	private Label[][] gridPlayer1= new Label[10][10];
 	
 	private Player player0;
 	private Player player1;
@@ -66,17 +70,27 @@ public class Game extends Application {
 	     * ship initialization
 		 * 
 		 *   DESTROYER (2),
-		 *   CRUISER (3),
+		 *   CRUISER1 (3),
+		 *   CRUISER2 (3),
 		 *   BATTLESHIP(4),
 		 *   CARRIER(5);
 		 */
 			
-		for(int i=0; i < 2; i++){
+		for(int i = 0; i < 2; i++){
 				ships[i][0]=new Ship(ShipType.DESTROYER);
-				ships[i][1]=new Ship(ShipType.CRUISER);
-				ships[i][2]=new Ship(ShipType.CRUISER);
+				ships[i][1]=new Ship(ShipType.CRUISER1);
+				ships[i][2]=new Ship(ShipType.CRUISER2);
 				ships[i][3]=new Ship(ShipType.BATTLESHIP); 
 				ships[i][4]=new Ship(ShipType.CARRIER);
+		}
+		/**
+		 * Cases initializations
+		 */
+		for(int i = 0 ; i < 10 ; i++){
+			for(int j = 0 ; j < 10 ; j++){
+				casesPlayer0[i][j]=new Case(CaseContents.UNKNOWN);
+				casesPlayer1[i][j]=new Case(CaseContents.UNKNOWN);
+			}
 		}
 	}
 
@@ -176,14 +190,18 @@ public class Game extends Application {
 						if(playAction==true){
 							
 							player0=new Player(0,"player1",shipSelectPosLabel);
-							player0.setGrid(shipSelectPosLabel);
+							player1=new Player(1,"computer",shipSelectPosLabel);
+							
+							ships[1]=ships[0];
+							casesPlayer1=casesPlayer0;
+							
 							BorderPane gameBorderPane= new BorderPane();
 							
 							/**
 							 * gameBorderPane handling
 							 */
 							gameBorderPane.setTop(addTitle("BattleShips"));
-							gameBorderPane.setCenter(addDoubleMixGridPane());   
+							gameBorderPane.setCenter(addDoubleMixGridPane(gameBorderPane));   
 							gameBorderPane.setLeft(setPlayer(0));
 							gameBorderPane.setRight(setPlayer(1));
 							gameBorderPane.setPadding(new Insets(5,5,5,5));
@@ -228,6 +246,7 @@ public class Game extends Application {
 	    
 	}
 	
+	
 	/**
 	 * call this method to set a title to the window but inside the borderPage object
 	 * @param title
@@ -264,14 +283,14 @@ public class Game extends Application {
 		}
 		
 		if(player == 1){
-			vbox.getChildren().add(new Label("Player 2"));
+			vbox.getChildren().add(new Label("Computer"));
 		}
 		
 		/**
 		 * label d'initialization
 		 */
 		Label score[]=new Label[5];
-		for(int i=0;i<5;i++){
+		for(int i = 0 ; i < 5 ; i++){
 			score[i]=new Label();
 		}
 		
@@ -287,11 +306,18 @@ public class Game extends Application {
 	     * this labels just show to the player how many time he stroke a ship
 	     * if in a first time, he succeeded to hit one 
 	     */
-		for(int i=0;i<5;i++){
+		for(int i = 0 ; i < 5 ; i++){
+			/**
+			 * 
+			 */
 			if(ships[player][i].getShotCount() > 0){
-				score[i].setText(String.valueOf(ships[player][i]));
+				score[i].setText(String.valueOf(ships[player][i].getShotCount()));
 				score[i].setStyle(scoreStyle[0]);
+				score[i].setPadding(new Insets(2,2,2,2));
 				scoreBox.getChildren().add(score[i]);
+			}
+			if(ships[player][i].getShotCount() == ships[player][i].getSize()){
+				score[i].setStyle(scoreStyle[1]);
 			}
 		}
 		
@@ -367,12 +393,12 @@ public class Game extends Application {
 						/**
 						 * before withdraw selection of another ship if there is
 						 */
-						for(int i=0;i<5;i++){
-							for(int j=0;j<ships[0][i].getSize();j++){
+						for(int i = 0 ; i < 5 ; i++){
+							for(int j = 0 ; j < ships[0][i].getSize() ; j++){
 								shipsSelectionLabel[i][j].setStyle(squareGridPaneStyle);
 							}
 						}
-						for(int j=0;j<ships[0][IJ[0]].getSize();j++){
+						for(int j = 0 ; j < ships[0][IJ[0]].getSize() ; j++){
 							shipsSelectionLabel[IJ[0]][j].setStyle(shipPickingSquareGridPaneStyleOnClick);
 						}
 					}
@@ -462,7 +488,8 @@ public class Game extends Application {
 							/**
 							 * 
 							 *   DESTROYER (2),
-							 *   CRUISER (3),
+							 *   CRUISER1 (3),
+							 *   CRUISER2 (3),
 							 *   BATTLESHIP(4),
 							 *   CARRIER(5);
 							 */
@@ -477,6 +504,7 @@ public class Game extends Application {
 								int j=shipPosLabelIJ[1];
 								shipSelectPosLabel[i][j].setText("||||");
 								shipSelectPosLabel[i][j].setStyle(backgroundSelect);
+								setCaseContents(ships[0][shipSelected],i,j);
 								persistentAction=true;
 							}
 							if(persistentAction==true)
@@ -502,6 +530,7 @@ public class Game extends Application {
 								int i=shipPosLabelIJ[0];
 								shipSelectPosLabel[i][j].setText("||||");
 								shipSelectPosLabel[i][j].setStyle(backgroundSelect);
+								setCaseContents(ships[0][shipSelected],i,j);
 								persistentAction=true;
 							}
 							if(persistentAction==true)
@@ -509,6 +538,29 @@ public class Game extends Application {
 						}
 					}
 				}
+			}
+			/** 
+			 * method to set each ship case's type contained in the grid
+			 * @param ship
+			 * @param i
+			 * @param j
+			 */
+			public void setCaseContents(Ship ship, int i, int j){
+
+				if(ship.getShipType()==ShipType.DESTROYER)
+					casesPlayer0[i][j].setContents(CaseContents.DESTROYER_CASE);
+				
+				if(ship.getShipType()==ShipType.CRUISER1)
+					casesPlayer0[i][j].setContents(CaseContents.CRUISER1_CASE);
+
+				if(ship.getShipType()==ShipType.CRUISER2)
+					casesPlayer0[i][j].setContents(CaseContents.CRUISER2_CASE);
+				
+				if(ship.getShipType()==ShipType.BATTLESHIP)
+					casesPlayer0[i][j].setContents(CaseContents.BATTLESHIP_CASE);
+				
+				if(ship.getShipType()==ShipType.CARRIER)
+					casesPlayer0[i][j].setContents(CaseContents.CARRIER_CASE);
 			}
 			public void setPersistent(){
 				for(int shipOwner=0; shipOwner<2; shipOwner++){
@@ -547,6 +599,7 @@ public class Game extends Application {
 			 * @param shipNumber
 			 */
 			public void setShip(int shipOwner, int shipNumber){
+				
 				ships[shipOwner][shipNumber].setOrientation(shipOrientation);
 				ships[shipOwner][shipNumber].setPosX(shipPosLabelIJ[0]);
 				ships[shipOwner][shipNumber].setPosY(shipPosLabelIJ[1]);
@@ -610,116 +663,185 @@ public class Game extends Application {
 	    return addShipSettingBox;
 	}
 	
+	public void setComputerShip(){
+		
+	}
 	
-	public GridPane addDoubleMixGridPane() {
+	public HBox addDoubleMixGridPane(BorderPane gameBorderPane) {
 		
-		GridPane gridPane= new GridPane();
+		HBox grids=new HBox();
+		grids.setAlignment(Pos.CENTER);
+		grids.setPadding(new Insets(5,5,5,5));
 		
+		GridPane player0GridPane= new GridPane();
+		GridPane player1GridPane= new GridPane();
+
 		/**
 		 * Set the the height gap between each label
 		 * Set the width gap between each label
 		 */
 		
 		// Set the the height gap between each label
-		gridPane.setHgap(1); 
-		
+		player0GridPane.setHgap(1); 
+		player1GridPane.setHgap(1); 
+
 		//Set the width gap between each label
-		gridPane.setVgap(1); 
-		
-		gridPane.setAlignment(Pos.CENTER);
-		gridPane.setPadding(new Insets(5,5,5,5)); //top right bottom left
-		gridPane.setStyle(gridPaneStyle);
+		player0GridPane.setVgap(1); 
+		player1GridPane.setVgap(1); 
+
+		player0GridPane.setAlignment(Pos.CENTER);
+		player1GridPane.setAlignment(Pos.CENTER);
+
+		player0GridPane.setPadding(new Insets(5,5,5,5)); //top right bottom left
+		player1GridPane.setPadding(new Insets(5,5,5,5)); //top right bottom left
+
+		player0GridPane.setStyle(gridPaneStyle);
+		player1GridPane.setStyle(gridPaneStyle);
+
 
 		
 		for(int i=0 ; i < 10 ; i++){
-			for(int j=0 ; j < 21 ; j++){
-				
-				/** 
-				 * Spit the grid in both
-				 */
-				if(j == 10){
-					label[i][j]=new Label(" | ");
-					gridPane.add(label[i][j],j,i+1);
-				}
-				
+			for(int j=0 ; j < 10 ; j++){
 				//player0 grid
 				//from label[0][0] to label [10][9] included
-				if(j < 10 ){
-					label[i][j]=player0.getGrid()[i][j];
-					label[i][j].setStyle(squareGridPaneStyle);
-					gridPane.add(label[i][j],j,i+1);
-				}
 				
+				gridPlayer0[i][j]=player0.getGrid()[i][j];
+				gridPlayer0[i][j].setStyle(squareGridPaneStyle);
+				player0GridPane.add(gridPlayer0[i][j],j,i+1);
+			
 				//player1 grid
 				//from label[0][11] to label [10][20] included
-				if(j > 10 ){
-					label[i][j]=new Label("   ");
-					label[i][j].setStyle(squareGridPaneStyle);
-					gridPane.add(label[i][j],j,i+1);
-				}
+				
+				gridPlayer1[i][j]=new Label("   ");
+				gridPlayer1[i][j].setStyle(squareGridPaneStyle);
+				player1GridPane.add(gridPlayer1[i][j],j,i+1);
+				
 				/**
 				 * handle each click which has been realized on a case
 				 */
 				final int IJ[]={i,j};
-				label[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
+				gridPlayer0[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent mouseEvent) {
-						if(IJ[1] > 10){
-							/**
-							 * know then set the current player
-							 */
-							int currentPlayerId=-1;
-							if(IJ[1] < 10)
-								currentPlayerId=0;
-							if(IJ[1] > 10)
-								currentPlayerId=1;
 							/**
 							 * no matter whether the case clicked got a ship or not
 							 * set firstly its color to transparent
 							 */
 							labelEffect(IJ);
 	
-							for(int i=0;i<5;i++){
-								/**
-								 * know if the label clicked belongs to a ship
-								 * then make options
+							/**
+							 * know if the label clicked belongs to a ship
+							 * then make options
+							 */
+							if(casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.UNKNOWN ){
+								/** 
+								 * if there is a ship touched and its shot number isn't already reached
+								 * get the touch ship by the caseContents 
 								 */
-								if(IJ[0]==ships[currentPlayerId][i].getPosX() && IJ[1]==ships[currentPlayerId][i].getPosY()){
-									/** 
-									 * if there is a ship touched and its shot number isn't already reached 
-									 */
-									if(ships[currentPlayerId][i].getShotCount() < ships[currentPlayerId][i].getSize()){
-										/**
-										 * increase the shotCount of the touched ship
-										 * if the square was a ship square, set its color
-										 */
-										ships[currentPlayerId][i].setShotCount(ships[currentPlayerId][i].getShotCount()+1);
-										
-										label[IJ[0]][IJ[1]].setStyle(squareGridPaneStyleOnTouch);
-	
-									}
+								ShipType shipType= casesPlayer0[IJ[0]][IJ[1]].getContents().getShipType();
+								
+								int shipTypeId=-1;
+								if(shipType==ShipType.DESTROYER)
+									shipTypeId=0;
+								if(shipType==ShipType.CRUISER1)
+									shipTypeId=1;
+								if(shipType==ShipType.CRUISER2)
+									shipTypeId=2;
+								if(shipType==ShipType.BATTLESHIP)
+									shipTypeId=3;
+								if(shipType==ShipType.CARRIER)
+									shipTypeId=4;
+								
+								if(ships[0][shipTypeId].getShotCount() < ships[0][shipTypeId].getSize()){
 									/**
-									 * if the ship hit has already completely been found out
-									 * then set it to sinked
+									 * increase the shotCount of the touched ship
+									 * if the square was a ship square, set its color
 									 */
-									if(ships[currentPlayerId][i].getShotCount() >= ships[currentPlayerId][i].getSize()){
-										ships[currentPlayerId][i].setSinked();
-									}
-									setPlayer(currentPlayerId);
+									ships[0][shipTypeId].setShotCount(ships[0][shipTypeId].getShotCount()+1);
+											
+									gridPlayer0[IJ[0]][IJ[1]].setStyle(squareGridPaneStyleOnTouch);
+		
 								}
+								/**
+								 * if the ship hit has already completely been found out
+								 * then set it to sinked
+								 */
+								if(ships[0][shipTypeId].getShotCount() >= ships[0][shipTypeId].getSize()){
+									ships[0][shipTypeId].setSinked();
+								}
+								gameBorderPane.setLeft(setPlayer(0));
 							}
-						}
 					}
 					public void labelEffect(int[] labelPosition){
 						
-						label[labelPosition[0]][labelPosition[1]].setStyle(squareGridPaneStyleOnClick);
+						gridPlayer0[labelPosition[0]][labelPosition[1]].setStyle(squareGridPaneStyleOnClick);
+					}
+					
+				});
+				gridPlayer1[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+						/**
+						 * no matter whether the case clicked got a ship or not
+						 * set firstly its color to transparent
+						 */
+						labelEffect(IJ);
+
+						/**
+						 * know if the label clicked belongs to a ship
+						 * then make options
+						 */
+						if(casesPlayer1[IJ[0]][IJ[1]].getContents()!=CaseContents.UNKNOWN ){
+							/** 
+							 * if there is a ship touched and its shot number isn't already reached
+							 * get the touch ship by the caseContents 
+							 */
+							ShipType shipType= casesPlayer1[IJ[0]][IJ[1]].getContents().getShipType();
+							
+							int shipTypeId=-1;
+							
+							if(shipType==ShipType.DESTROYER)
+								shipTypeId=0;
+							if(shipType==ShipType.CRUISER1)
+								shipTypeId=1;
+							if(shipType==ShipType.CRUISER2)
+								shipTypeId=2;
+							if(shipType==ShipType.BATTLESHIP)
+								shipTypeId=3;
+							if(shipType==ShipType.CARRIER)
+								shipTypeId=4;
+							
+							if(ships[1][shipTypeId].getShotCount() < ships[1][shipTypeId].getSize()){
+								/**
+								 * increase the shotCount of the touched ship
+								 * if the square was a ship square, set its color
+								 */
+								ships[1][shipTypeId].setShotCount(ships[1][shipTypeId].getShotCount()+1);
+										
+								gridPlayer1[IJ[0]][IJ[1]].setStyle(squareGridPaneStyleOnTouch);
+	
+							}
+							/**
+							 * if the ship hit has already completely been found out
+							 * then set it to sinked
+							 */
+							if(ships[1][shipTypeId].getShotCount() >= ships[1][shipTypeId].getSize()){
+								ships[1][shipTypeId].setSinked();
+							}
+							gameBorderPane.setRight(setPlayer(1));
+						}
+				}
+					public void labelEffect(int[] labelPosition){
+						
+						gridPlayer1[labelPosition[0]][labelPosition[1]].setStyle(squareGridPaneStyleOnClick);
 					}
 					
 				});
 			}
 		}
+		grids.getChildren().addAll(player0GridPane,player1GridPane);
 		
-	    return gridPane;
+	    return grids;
 	}
 	
 	/**

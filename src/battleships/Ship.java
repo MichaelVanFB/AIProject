@@ -22,6 +22,9 @@ public class Ship {
 		this.type=type;
 		this.size=type.getLength();
 	}
+	public ShipType getShipType(){
+		return this.type;
+	}
 	public int getShotCount(){
 		return shotCount;
 	}
@@ -63,6 +66,8 @@ public class Ship {
 enum ShipType {
     DESTROYER (2),
     CRUISER (3),
+    CRUISER1(3),
+    CRUISER2(3),
     BATTLESHIP(4),
     CARRIER(5);
     
