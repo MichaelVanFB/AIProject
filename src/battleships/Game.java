@@ -664,47 +664,49 @@ public class Game extends Application {
 				label[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent mouseEvent) {
-						/**
-						 * know then set the current player
-						 */
-						int currentPlayerId=-1;
-						if(IJ[1] < 10)
-							currentPlayerId=0;
-						if(IJ[1] > 10)
-							currentPlayerId=1;
-						/**
-						 * no matter whether the case clicked got a ship or not
-						 * set firstly its color to transparent
-						 */
-						labelEffect(IJ);
-
-						for(int i=0;i<5;i++){
+						if(IJ[1] > 10){
 							/**
-							 * know if the label clicked belongs to a ship
-							 * then make options
+							 * know then set the current player
 							 */
-							if(IJ[0]==ships[currentPlayerId][i].getPosX() && IJ[1]==ships[currentPlayerId][i].getPosY()){
-								/** 
-								 * if there is a ship touched and its shot number isn't already reached 
-								 */
-								if(ships[currentPlayerId][i].getShotCount() < ships[currentPlayerId][i].getSize()){
-									/**
-									 * increase the shotCount of the touched ship
-									 * if the square was a ship square, set its color
-									 */
-									ships[currentPlayerId][i].setShotCount(ships[currentPlayerId][i].getShotCount()+1);
-									
-									label[IJ[0]][IJ[1]].setStyle(squareGridPaneStyleOnTouch);
-
-								}
+							int currentPlayerId=-1;
+							if(IJ[1] < 10)
+								currentPlayerId=0;
+							if(IJ[1] > 10)
+								currentPlayerId=1;
+							/**
+							 * no matter whether the case clicked got a ship or not
+							 * set firstly its color to transparent
+							 */
+							labelEffect(IJ);
+	
+							for(int i=0;i<5;i++){
 								/**
-								 * if the ship hit has already completely been found out
-								 * then set it to sinked
+								 * know if the label clicked belongs to a ship
+								 * then make options
 								 */
-								if(ships[currentPlayerId][i].getShotCount() >= ships[currentPlayerId][i].getSize()){
-									ships[currentPlayerId][i].setSinked();
+								if(IJ[0]==ships[currentPlayerId][i].getPosX() && IJ[1]==ships[currentPlayerId][i].getPosY()){
+									/** 
+									 * if there is a ship touched and its shot number isn't already reached 
+									 */
+									if(ships[currentPlayerId][i].getShotCount() < ships[currentPlayerId][i].getSize()){
+										/**
+										 * increase the shotCount of the touched ship
+										 * if the square was a ship square, set its color
+										 */
+										ships[currentPlayerId][i].setShotCount(ships[currentPlayerId][i].getShotCount()+1);
+										
+										label[IJ[0]][IJ[1]].setStyle(squareGridPaneStyleOnTouch);
+	
+									}
+									/**
+									 * if the ship hit has already completely been found out
+									 * then set it to sinked
+									 */
+									if(ships[currentPlayerId][i].getShotCount() >= ships[currentPlayerId][i].getSize()){
+										ships[currentPlayerId][i].setSinked();
+									}
+									setPlayer(currentPlayerId);
 								}
-								setPlayer(currentPlayerId);
 							}
 						}
 					}
