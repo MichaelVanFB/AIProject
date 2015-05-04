@@ -17,6 +17,10 @@ public class Grid<E extends Case>
         cases = (E[][]) new Object[height][width];
     }
     
+    Grid(E[][] stateCases) {
+        this.cases = stateCases;
+    }
+    
     /**
      * Constructor to make a grid that is a copy of another.
      * 

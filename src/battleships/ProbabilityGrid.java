@@ -19,4 +19,8 @@ public class ProbabilityGrid extends Grid<ProbabilityCase>
         super(grid);
     }
     
+    ProbabilityGrid(ProbabilityCase[][] cases) {
+        super(cases);
+    }
+    
 }
