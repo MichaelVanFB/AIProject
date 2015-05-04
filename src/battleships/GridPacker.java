@@ -51,9 +51,11 @@ public class GridPacker
         this.carrier = old.carrier;
     }
     
-    GridPacker(int height, int width) {
+    
+    
+    GridPacker(ProbabilityGrid grid) {
         instanceCount++;
-        this.grid = new ProbabilityGrid(height, width);
+        this.grid = new ProbabilityGrid(10,10);
         this.condProbability = 1;
         this.destroyer = new Ship(ShipType.DESTROYER);
         this.cruiser1 = new Ship(ShipType.CRUISER1);
