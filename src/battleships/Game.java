@@ -1,8 +1,5 @@
 package battleships;
 
-
-
-
 import java.util.Random;
 
 import javafx.application.Application;
@@ -892,105 +889,7 @@ public class Game extends Application {
 				gridPlayer1[i][j].setStyle(squareGridPaneStyle);
 				player1GridPane.add(gridPlayer1[i][j],j,i+1);
 				
-				/**
-				 * handle each click which has been realized on a case
-				 */
 				final int IJ[]={i,j};
-				gridPlayer0[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
-					@Override
-					public void handle(MouseEvent mouseEvent) {
-						/**
-						 * if the case which is on clicked is set with an unknown content type,
-						 * hence delete it from the display
-						 */
-						if(casesPlayer0[IJ[0]][IJ[1]].getContents()==CaseContents.UNKNOWN ){
-							labelEffect(IJ);
-						}
-						/**
-						 * know if the label clicked belongs to a ship/content statement
-						 * then make options
-						 */
-						if(casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.UNKNOWN
-								&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_DESTROYER 
-								&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CRUISER 
-								&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_BATTLESHIP 
-								&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CARRIER ){
-							/** 
-							 * if there is a ship touched and its shot number isn't already reached
-							 * get the touch ship by the caseContents 
-							 *
-							 * retrieve the shipType from the case content then
-							 * set the content case to hit "something" content according to its referenced shipType
-							 */
-							
-							ShipType shipType= casesPlayer0[IJ[0]][IJ[1]].getContents().getShipType();
-							
-							int shipTypeId=-1;
-							
-							if(shipType==ShipType.DESTROYER){
-								shipTypeId=0;
-								casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_DESTROYER);
-							}
-							if(shipType==ShipType.CRUISER1){
-								shipTypeId=1;
-								casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER);
-							}
-							if(shipType==ShipType.CRUISER2){
-								shipTypeId=2;
-								casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER);
-							}
-							if(shipType==ShipType.BATTLESHIP){
-								shipTypeId=3;
-								casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_BATTLESHIP);
-							}
-							if(shipType==ShipType.CARRIER){
-								shipTypeId=4;
-								casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CARRIER);
-							}
-							
-							if(ships[0][shipTypeId].getShotCount() < ships[0][shipTypeId].getSize()){
-								/**
-								 * increase the shotCount of the touched ship
-								 * if the square was a ship square, set its color
-								 */
-								ships[0][shipTypeId].setShotCount(ships[0][shipTypeId].getShotCount()+1);
-										
-								gridPlayer0[IJ[0]][IJ[1]].setStyle(squareGridPaneStyleOnTouch);
-	
-							}	
-							/**
-							 * if the ship hit has already completely been found out
-							 * then set it to sinked
-							 */
-							if(ships[0][shipTypeId].getShotCount() >= ships[0][shipTypeId].getSize()){
-								ships[0][shipTypeId].setSinked();
-							}
-							gameBorderPane.setLeft(setPlayer(0));
-							
-						}
-						/**
-						 * call the gameDone method to know if the one player succeeded to win
-						 */
-						if(gameDone()==true){
-							
-							VBox exit=new VBox();
-							exit.setAlignment(Pos.CENTER);
-							exit.setPadding(new Insets(5,5,5,5));
-							
-							Label exitMessage=new Label("The game has been won by "+winner);
-							exitMessage.setAlignment(Pos.CENTER);
-							
-							exit.getChildren().addAll(addTitle("Battle Ships"),exitMessage);
-							Scene exitScene= new Scene(exit);
-							stage.setScene(exitScene);
-						}
-					}
-					public void labelEffect(int[] labelPosition){
-						
-						gridPlayer0[labelPosition[0]][labelPosition[1]].setStyle(squareGridPaneStyleOnClick);
-					}
-					
-				});
 				gridPlayer1[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent mouseEvent) {
@@ -1078,6 +977,128 @@ public class Game extends Application {
 							Scene exitScene= new Scene(exit);
 							stage.setScene(exitScene);
 						}
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						/**
+						 * call chooseCase to get algorithmic coordinates
+						 */
+						Coordinates coordinates=player1.ChooseCase();
+						final int IJ[]={coordinates.getX(),coordinates.getY()};
+						
+								/**
+								 * if the case which is on clicked is set with an unknown content type,
+								 * hence delete it from the display
+								 */
+								if(casesPlayer0[IJ[0]][IJ[1]].getContents()==CaseContents.UNKNOWN ){
+									labelEffect(IJ);
+								}
+								/**
+								 * know if the label clicked belongs to a ship/content statement
+								 * then make options
+								 */
+								if(casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.UNKNOWN
+										&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_DESTROYER 
+										&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CRUISER 
+										&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_BATTLESHIP 
+										&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CARRIER ){
+									/** 
+									 * if there is a ship touched and its shot number isn't already reached
+									 * get the touch ship by the caseContents 
+									 *
+									 * retrieve the shipType from the case content then
+									 * set the content case to hit "something" content according to its referenced shipType
+									 */
+									
+									ShipType shipType= casesPlayer0[IJ[0]][IJ[1]].getContents().getShipType();
+									
+									int shipTypeId=-1;
+									
+									if(shipType==ShipType.DESTROYER){
+										shipTypeId=0;
+										casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_DESTROYER);
+									}
+									if(shipType==ShipType.CRUISER1){
+										shipTypeId=1;
+										casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER);
+									}
+									if(shipType==ShipType.CRUISER2){
+										shipTypeId=2;
+										casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER);
+									}
+									if(shipType==ShipType.BATTLESHIP){
+										shipTypeId=3;
+										casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_BATTLESHIP);
+									}
+									if(shipType==ShipType.CARRIER){
+										shipTypeId=4;
+										casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CARRIER);
+									}
+									
+									if(ships[0][shipTypeId].getShotCount() < ships[0][shipTypeId].getSize()){
+										/**
+										 * increase the shotCount of the touched ship
+										 * if the square was a ship square, set its color
+										 */
+										ships[0][shipTypeId].setShotCount(ships[0][shipTypeId].getShotCount()+1);
+												
+										gridPlayer0[IJ[0]][IJ[1]].setStyle(squareGridPaneStyleOnTouch);
+			
+									}	
+									/**
+									 * if the ship hit has already completely been found out
+									 * then set it to sinked
+									 */
+									if(ships[0][shipTypeId].getShotCount() >= ships[0][shipTypeId].getSize()){
+										ships[0][shipTypeId].setSinked();
+									}
+									gameBorderPane.setLeft(setPlayer(0));
+									
+								}
+								/**
+								 * call the gameDone method to know if the one player succeeded to win
+								 */
+								if(gameDone()==true){
+									
+									VBox exit=new VBox();
+									exit.setAlignment(Pos.CENTER);
+									exit.setPadding(new Insets(5,5,5,5));
+									
+									Label exitMessage=new Label("The game has been won by "+winner);
+									exitMessage.setAlignment(Pos.CENTER);
+									
+									exit.getChildren().addAll(addTitle("Battle Ships"),exitMessage);
+									Scene exitScene= new Scene(exit);
+									stage.setScene(exitScene);
+								}
+							
+							
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
 					}
 					
 					public void labelEffect(int[] labelPosition){
