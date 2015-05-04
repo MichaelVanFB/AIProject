@@ -5,14 +5,15 @@ import javafx.scene.control.Label;
 public class Player {
 	private int id;
 	private String name;
-	private Label[][] grid = new Label [10][10];
+	private Label[][] gridLabel = new Label [10][10];
+	private Case[][] gridCase = new Case [10][10];
 	private Ship[] ships= new Ship[5];
 	private int score;
 	
-	public Player(int id, String name, Label[][] grid){
+	public Player(int id, String name, Label[][] gridLabel){
 		this.id=id;
 		this.name=name;
-		this.grid=grid;
+		this.gridLabel=gridLabel;
 	}
 	public Player (int id, String name){
 		this.id=id;
@@ -24,11 +25,17 @@ public class Player {
 	public void setName(String name){
 		this.name=name;
 	}
-	public Label[][] getGrid(){
-		return this.grid;
+	public Label[][] getGridLabel(){
+		return this.gridLabel;
 	}
-	public void setGrid(Label [][] grid){
-		this.grid=grid;
+	public void setGridLabel(Label [][] grid){
+		this.gridLabel=grid;
+	}
+	public Case[][] getGridCase(){
+		return this.gridCase;
+	}
+	public void setGridCase(Case[][] gridCase){
+		this.gridCase=gridCase;
 	}
 	public Ship[] getShips(){
 		return ships;

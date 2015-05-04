@@ -50,7 +50,9 @@ public class Game extends Application {
 	private Label[][] gridPlayer1= new Label[10][10];
 	
 	private Player player0;
-	private Player player1;
+	private SmartAgent player1;
+	//private SmartAgent player;
+
 	
 	private Label shipSelectPosLabelPlayer0[][]= new Label[10][10];
 	private Label shipSelectPosLabelPlayer1[][]= new Label[10][10];
@@ -63,7 +65,6 @@ public class Game extends Application {
 	
 	private int shipPosLabelIJ[]=new int[2];
 
-	
 	@Override
 	public void start (Stage stage) throws Exception {
 		
@@ -196,7 +197,10 @@ public class Game extends Application {
 						if(playAction==true){
 							
 							player0=new Player(0,"player1",shipSelectPosLabelPlayer0);
-							player1=new Player(1,"computer",shipSelectPosLabelPlayer1);
+							player0.setGridCase(casesPlayer0);
+							
+							player1=new SmartAgent(1,"computer",shipSelectPosLabelPlayer1);
+							player1.setGridCase(casesPlayer1);
 							
 							BorderPane gameBorderPane= new BorderPane();
 							
@@ -879,7 +883,7 @@ public class Game extends Application {
 		for(int i=0 ; i < 10 ; i++){
 			for(int j=0 ; j < 10 ; j++){
 				//player0 grid
-				gridPlayer0[i][j]=player0.getGrid()[i][j];
+				gridPlayer0[i][j]=player0.getGridLabel()[i][j];
 				gridPlayer0[i][j].setStyle(squareGridPaneStyle);
 				player0GridPane.add(gridPlayer0[i][j],j,i+1);
 			
