@@ -13,6 +13,11 @@ class ProbabilityCase extends Case
         this.probabilityIsShip = probability;
     }
     
+    ProbabilityCase(Case normalCase) {
+        super();
+        this.probabilityIsShip = 0;
+    }
+    
     ProbabilityCase(float probability) {
         super();
         this.probabilityIsShip = probability;
