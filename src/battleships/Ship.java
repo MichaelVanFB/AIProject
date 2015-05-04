@@ -2,14 +2,28 @@ package battleships;
 
 public class Ship {
 	private ShipType type;
+        private Coordinates[] coords;        
 	private char orientation;
-	private int posX;
+	
+        private int posX;
 	private int posY;
 	private int size;
 	private int shotCount=0;
 	private boolean sinked=false;
 	private boolean set=false;
-	
+        
+	public Coordinates[] getCoords() {
+            return this.coords;
+        }
+        
+        void setCoords(Coordinates[] coords) {
+            this.coords = coords;
+        }
+        
+        public ShipType getType() {
+            return this.type;
+        }
+        
 	public Ship(ShipType type, char orientation, int posX,int posY){
 		this.type=type;
 		this.orientation=orientation;

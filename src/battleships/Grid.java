@@ -34,6 +34,10 @@ public class Grid<E extends Case>
         }        
     }
     
+    E[][] getCases() {
+        return this.cases;
+    }
+    
     E getCase(int row, int column) {
         if (row >= getHeight() || column >= getWidth()) {
             return null;

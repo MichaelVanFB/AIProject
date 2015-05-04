@@ -112,4 +112,15 @@ public class Coordinates {
         }
         throw new IllegalArgumentException("coordinated must be vertical or horizontal");
     }
+    
+    static boolean arrayContains(Coordinates[] coords, Coordinates toFind) {
+        boolean found = false;
+        for (Coordinates c : coords) {
+            if (toFind.x == c.x && toFind.y == c.y) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
 }
