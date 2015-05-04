@@ -3,6 +3,8 @@ package battleships;
 import javafx.scene.control.Label;
 
 public class SmartAgent extends Player {
+	
+	private GridPacker moveCalculator;
 
     GridPacker moveCalculator;
     
