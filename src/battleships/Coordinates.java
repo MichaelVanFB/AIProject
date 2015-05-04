@@ -53,7 +53,7 @@ public class Coordinates {
     static int minX(Coordinates[] coords) {
         int min = coords[0].getX();
         for (int i = 1; i < coords.length; i++) {
-            if( (coords[i].getX() - min) < 0) {
+            if ( coords[i].getX() < min ) {
                 min = coords[i].getX();
             }
         }
@@ -63,7 +63,7 @@ public class Coordinates {
     static int maxX(Coordinates[] coords) {
         int max = coords[0].getX();
         for (int i = 1; i < coords.length; i++) {
-            if( (coords[i].getX() - max) > 0) {
+            if ( coords[i].getX() > max ) {
                 max = coords[i].getX();
             }
         }
@@ -73,7 +73,7 @@ public class Coordinates {
     static int minY(Coordinates[] coords) {
         int min = coords[0].getY();
         for (int i = 1; i < coords.length; i++) {
-            if( (coords[i].getY() - min) < 0) {
+            if ( coords[i].getY() < min ) {
                 min = coords[i].getY();
             }
         }
@@ -83,7 +83,7 @@ public class Coordinates {
     static int maxY(Coordinates[] coords) {
         int max = coords[0].getY();
         for (int i = 1; i < coords.length; i++) {
-            if( (coords[i].getY() - max) > 0) {
+            if( coords[i].getY() > max ) {
                 max = coords[i].getY();
             }
         }
@@ -111,5 +111,16 @@ public class Coordinates {
             return Math.abs(maxY(coords) - minY(coords));
         }
         throw new IllegalArgumentException("coordinated must be vertical or horizontal");
+    }
+    
+    static boolean arrayContains(Coordinates[] coords, Coordinates toFind) {
+        boolean found = false;
+        for (Coordinates c : coords) {
+            if (toFind.x == c.x && toFind.y == c.y) {
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 }
