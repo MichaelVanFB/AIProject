@@ -37,4 +37,7 @@ public class SmartAgent extends Player {
         }
         return max;
     }
+    public GridPacker getGridPacker(){
+    	return this.moveCalculator;
+    }
 }
