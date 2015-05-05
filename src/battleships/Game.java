@@ -959,7 +959,7 @@ public class Game extends Application {
 							if(ships[1][shipTypeId].getShotCount() >= ships[1][shipTypeId].getSize()){
 								ships[1][shipTypeId].setSinked();
 							}
-							gameBorderPane.setRight(setPlayer(1));
+							gameBorderPane.setRight(setPlayer(0));
 							
 							
 						}
@@ -977,92 +977,80 @@ public class Game extends Application {
 							Scene exitScene= new Scene(exit);
 							stage.setScene(exitScene);
 						}
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
+					
 						/**
 						 * call chooseCase to get algorithmic coordinates
 						 */
 						Coordinates coordinates=player1.ChooseCase();
 						final int IJ[]={coordinates.getX(),coordinates.getY()};
 						
-								/**
-								 * if the case which is on clicked is set with an unknown content type,
-								 * hence delete it from the display
+							/**
+							 * if the case which is on clicked is set with an unknown content type,
+							 * hence delete it from the display
+							 */
+							if(casesPlayer0[IJ[0]][IJ[1]].getContents()==CaseContents.UNKNOWN ){
+								labelEffect(IJ);
+							}
+							/**
+							 * know if the label clicked belongs to a ship/content statement
+							 * then make options
+							 */
+							if(casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.UNKNOWN
+									&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_DESTROYER 
+									&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CRUISER 
+									&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_BATTLESHIP 
+									&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CARRIER ){
+								/** 
+								 * if there is a ship touched and its shot number isn't already reached
+								 * get the touch ship by the caseContents 
+								 *
+								 * retrieve the shipType from the case content then
+								 * set the content case to hit "something" content according to its referenced shipType
 								 */
-								if(casesPlayer0[IJ[0]][IJ[1]].getContents()==CaseContents.UNKNOWN ){
-									labelEffect(IJ);
+								
+								ShipType shipType= casesPlayer0[IJ[0]][IJ[1]].getContents().getShipType();
+								
+								int shipTypeId=-1;
+									
+								if(shipType==ShipType.DESTROYER){
+									shipTypeId=0;
+									casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_DESTROYER);
 								}
-								/**
-								 * know if the label clicked belongs to a ship/content statement
-								 * then make options
-								 */
-								if(casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.UNKNOWN
-										&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_DESTROYER 
-										&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CRUISER 
-										&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_BATTLESHIP 
-										&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CARRIER ){
-									/** 
-									 * if there is a ship touched and its shot number isn't already reached
-									 * get the touch ship by the caseContents 
-									 *
-									 * retrieve the shipType from the case content then
-									 * set the content case to hit "something" content according to its referenced shipType
-									 */
-									
-									ShipType shipType= casesPlayer0[IJ[0]][IJ[1]].getContents().getShipType();
-									
-									int shipTypeId=-1;
-									
-									if(shipType==ShipType.DESTROYER){
-										shipTypeId=0;
-										casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_DESTROYER);
-									}
-									if(shipType==ShipType.CRUISER1){
-										shipTypeId=1;
-										casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER);
-									}
-									if(shipType==ShipType.CRUISER2){
-										shipTypeId=2;
-										casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER);
-									}
-									if(shipType==ShipType.BATTLESHIP){
-										shipTypeId=3;
-										casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_BATTLESHIP);
-									}
-									if(shipType==ShipType.CARRIER){
-										shipTypeId=4;
-										casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CARRIER);
-									}
-									
-									if(ships[0][shipTypeId].getShotCount() < ships[0][shipTypeId].getSize()){
-										/**
-										 * increase the shotCount of the touched ship
-										 * if the square was a ship square, set its color
-										 */
-										ships[0][shipTypeId].setShotCount(ships[0][shipTypeId].getShotCount()+1);
-												
-										gridPlayer0[IJ[0]][IJ[1]].setStyle(squareGridPaneStyleOnTouch);
-			
-									}	
+								if(shipType==ShipType.CRUISER1){
+									shipTypeId=1;
+									casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER);
+								}
+								if(shipType==ShipType.CRUISER2){
+									shipTypeId=2;
+									casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER);
+								}
+								if(shipType==ShipType.BATTLESHIP){
+									shipTypeId=3;
+									casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_BATTLESHIP);
+								}
+								if(shipType==ShipType.CARRIER){
+									shipTypeId=4;
+									casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CARRIER);
+								}
+								
+								if(ships[0][shipTypeId].getShotCount() < ships[0][shipTypeId].getSize()){
 									/**
-									 * if the ship hit has already completely been found out
-									 * then set it to sinked
+									 * increase the shotCount of the touched ship
+									 * if the square was a ship square, set its color
 									 */
-									if(ships[0][shipTypeId].getShotCount() >= ships[0][shipTypeId].getSize()){
-										ships[0][shipTypeId].setSinked();
-									}
-									gameBorderPane.setLeft(setPlayer(0));
+									ships[0][shipTypeId].setShotCount(ships[0][shipTypeId].getShotCount()+1);
+											
+									gridPlayer0[IJ[0]][IJ[1]].setStyle(squareGridPaneStyleOnTouch);
+			
+								}	
+								/**
+								 * if the ship hit has already completely been found out
+								 * then set it to sinked
+								 */
+								if(ships[0][shipTypeId].getShotCount() >= ships[0][shipTypeId].getSize()){
+									ships[0][shipTypeId].setSinked();
+								}
+								gameBorderPane.setLeft(setPlayer(1));
 									
 								}
 								/**
@@ -1081,23 +1069,6 @@ public class Game extends Application {
 									Scene exitScene= new Scene(exit);
 									stage.setScene(exitScene);
 								}
-							
-							
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
 						
 					}
 					
