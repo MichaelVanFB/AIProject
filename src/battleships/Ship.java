@@ -35,6 +35,7 @@ public class Ship {
 	public Ship(ShipType type){
 		this.type=type;
 		this.size=type.getLength();
+                this.coords = new Coordinates[type.getLength()];
 	}
 	public ShipType getShipType(){
 		return this.type;

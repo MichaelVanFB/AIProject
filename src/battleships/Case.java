@@ -2,7 +2,7 @@ package battleships;
 
 public class Case
 {
-    private CaseContents contents;
+    private CaseContents contents = CaseContents.UNKNOWN;
     private float probabilityIsShip = 0.0f;
         
     Case(CaseContents contents, float probability) {

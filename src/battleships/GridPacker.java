@@ -38,7 +38,7 @@ public class GridPacker
      * We use an ArrayList instead of a regular array in order to save memory
      * and for convenience, although there may be a small impact on speed.
      */
-    private ArrayList<GridPacker> possibleConfigurations;
+    private ArrayList<GridPacker> possibleConfigurations = new ArrayList<GridPacker>();
     
     GridPacker(GridPacker old) {
         instanceCount++;
@@ -55,7 +55,7 @@ public class GridPacker
     
     GridPacker(Grid grid) {
         instanceCount++;
-        this.grid = new Grid(10,10);
+        this.grid = grid;
         this.condProbability = 1;
         this.destroyer = new Ship(ShipType.DESTROYER);
         this.cruiser1 = new Ship(ShipType.CRUISER1);
@@ -136,7 +136,7 @@ public class GridPacker
         // return immediately if we already found all the cases
         if (coords.length == ship.getType().getLength()) {
             // return an empty array
-            return (GridPacker[])results.toArray();
+            return (GridPacker[])results.toArray(new GridPacker[results.size()]);
         }
         // instanciate a counter for the number of configurations generated.
         // This is used to calculate the conditional probabilities (1/num)
