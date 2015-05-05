@@ -7,6 +7,7 @@ public class Player {
 	private String name;
 	private Label[][] gridLabel = new Label [10][10];
 	private Case[][] gridCase = new Case [10][10];
+	private Case[][] opponentGridCase = new Case [10][10];
 	private Ship[] ships= new Ship[5];
 	private int score;
 	
@@ -36,6 +37,12 @@ public class Player {
 	}
 	public void setGridCase(Case[][] gridCase){
 		this.gridCase=gridCase;
+	}
+	public void setOpponentGridCase(Case [][] opponentGridCase){
+		this.opponentGridCase=opponentGridCase;
+	}
+	public Case[][] getOpponentGridCase(){
+		return this.opponentGridCase;
 	}
 	public Ship[] getShips(){
 		return ships;
