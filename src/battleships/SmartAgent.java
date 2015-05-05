@@ -1,5 +1,7 @@
 package battleships;
 
+import java.util.ArrayList;
+import java.util.Random;
 import javafx.scene.control.Label;
 
 public class SmartAgent extends Player {
@@ -23,19 +25,30 @@ public class SmartAgent extends Player {
     
     public Coordinates chooseMaxProb() {
         Case[][] cases = moveCalculator.getGrid().cases;
-        Coordinates max = null;
+        ArrayList<Coordinates> max = new ArrayList<>();
         for (int i = 0; i < cases.length; i++) {
             for (int j = 0; j < cases[0].length; j++) {
                 Case c = cases[i][j];
-                if (max == null && c.getContents() == CaseContents.UNKNOWN) {
-                    max = new Coordinates(i,j);
+                if (max.isEmpty() && c.getContents() == CaseContents.UNKNOWN) {
+                    max.add(new Coordinates(i,j));
                 }
-                else if (c.getContents() == CaseContents.UNKNOWN && c.getProbabilityIsShip() > cases[max.getX()][max.getY()].getProbabilityIsShip()) {
-                    max = new Coordinates(i,j);
+                else if (c.getContents() == CaseContents.UNKNOWN && c.getProbabilityIsShip() > cases[max.get(0).getX()][max.get(0).getY()].getProbabilityIsShip()) {
+                    max = new ArrayList<Coordinates>();
+                    max.add(new Coordinates(i,j));
+                }
+                else if (c.getContents() == CaseContents.UNKNOWN && c.getProbabilityIsShip() == cases[max.get(0).getX()][max.get(0).getY()].getProbabilityIsShip()) {
+                    max.add(new Coordinates(i,j));
                 }
             }
         }
-        return max;
+        Random randomiser = new Random();
+        int ind = randomiser.nextInt(max.size());
+        Coordinates chosen = max.get(ind);
+        for (Coordinates co : max) {
+            System.out.print(" ("+co.getX()+","+co.getY()+")");
+        }
+        System.out.println("\nshooting at ("+chosen.getX()+","+chosen.getY()+")");
+        return chosen;
     }
     public GridPacker getGridPacker(){
     	return this.moveCalculator;

@@ -159,7 +159,8 @@ public class GridPacker
                     // otherwise check forwards for any obstructions
                     for (int v = 0; v < shiplen; v++) {
                         // if obstruction, fail
-                        if (newConfig.grid.cases[row][v].getContents() != CaseContents.UNKNOWN) {
+                        CaseContents newcontents = newConfig.grid.cases[row][v].getContents();
+                        if ( newcontents != CaseContents.UNKNOWN && newcontents != ship.getType().convertToCaseContents()) {
                             continue colLoop;
                         }
                         else {
@@ -184,8 +185,9 @@ public class GridPacker
                     Coordinates[] newCoords = new Coordinates[shiplen];
                     // otherwise check forwards for any obstructions
                     for (int u = 0; u < shiplen; u++) {
-                        // if obstruction, fail
-                        if (newConfig.grid.cases[u][col].getContents() != CaseContents.UNKNOWN) {
+                        // if obstruction, 
+                        CaseContents newcontents = newConfig.grid.cases[u][col].getContents();
+                        if ( newcontents != CaseContents.UNKNOWN && newcontents != ship.getType().convertToCaseContents()) {
                             continue rowLoop;
                         }
                         else {
@@ -216,7 +218,7 @@ public class GridPacker
                 Coordinates[] newCoords = new Coordinates[shiplen];
                 for (int u = 0; u < shiplen; u++) {
                     CaseContents contents = newConfig.grid.cases[d+u][y].getContents();
-                    if ( d + u < 0 || d + u >= newConfig.grid.getHeight() || (d != x && contents != CaseContents.UNKNOWN) ) {
+                    if ( d + u < 0 || d + u >= newConfig.grid.getHeight() || (d != x && (contents != CaseContents.UNKNOWN || contents != ship.getType().convertToCaseContents())) ) {
                         continue VLoop;
                     }
                     else {
@@ -237,7 +239,7 @@ public class GridPacker
                 Coordinates[] newCoords = new Coordinates[shiplen];
                 for (int v = 0; v < shiplen; v++) {
                     CaseContents contents = newConfig.grid.cases[x][d+v].getContents();
-                    if ( d + v < 0 || d + v >= newConfig.grid.getWidth() || (d != y && contents != CaseContents.UNKNOWN) ) {
+                    if ( d + v < 0 || d + v >= newConfig.grid.getWidth() || (d != y && (contents != CaseContents.UNKNOWN || contents != ship.getType().convertToCaseContents())) ) {
                         continue HLoop;
                     }
                     else {
@@ -271,7 +273,7 @@ public class GridPacker
                         // check not past borders
                         boolean pastBorders = d + u < 0 || d + u >= newConfig.grid.getHeight();
                         // check new cases are unknown
-                        boolean obstruction = !Coordinates.arrayContains(coords, new Coordinates(d+u,y)) && contents != CaseContents.UNKNOWN;
+                        boolean obstruction = !Coordinates.arrayContains(coords, new Coordinates(d+u,y)) && (contents != CaseContents.UNKNOWN || contents != ship.getType().convertToCaseContents());
                         if (pastBorders || obstruction) {
                             continue VLoop;
                         }
@@ -298,7 +300,7 @@ public class GridPacker
                         // check not past borders
                         boolean pastBorders = d + v < 0 || d + v >= newConfig.grid.getWidth();
                         // check new cases are unknown
-                        boolean obstruction = !Coordinates.arrayContains(coords, new Coordinates(x,d+v)) && contents != CaseContents.UNKNOWN;
+                        boolean obstruction = !Coordinates.arrayContains(coords, new Coordinates(x,d+v)) && (contents != CaseContents.UNKNOWN || contents != ship.getType().convertToCaseContents());
                         if (pastBorders || obstruction) {
                             continue HLoop;
                         }
@@ -339,11 +341,15 @@ public class GridPacker
                         numUnknown++;
                     }
                     else if (grid.getCase(row,col).getContents() != CaseContents.MISS) {
+                        System.out.println("contents of ship case:"+grid.getCase(row,col).getContents());
                         numKnownShip++;
                     }
                 }
             }
-            float probShip = (float)((float)(17 - numKnownShip) / numUnknown);
+            float probShip = (float)((float)(17 - numKnownShip) / (float)numUnknown);
+            System.out.println("num known ship cases = "+numKnownShip);
+            System.out.println("num unknown cases = "+numUnknown);
+            System.out.println("uniform probability = "+probShip);
             // iterate back over, set 1 where ship, 0 where miss, and formula
             // for rest
             for (int row = 0; row < grid.getHeight(); row++) {
@@ -359,6 +365,7 @@ public class GridPacker
                     else {
                         currentCase.setProbabilityIsShip(1.0f);
                     }
+                    System.out.println("case ("+row+","+col+") prob = "+currentCase.getProbabilityIsShip());
                 }
             }
         }
