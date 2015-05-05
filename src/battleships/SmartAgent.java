@@ -14,7 +14,7 @@ public class SmartAgent extends Player {
     
     public Coordinates ChooseCase() {
         // (re)make the GridPacker using the current state of the game
-        moveCalculator = new GridPacker(new Grid(this.getGridCase()));
+        moveCalculator = new GridPacker(new Grid(this.getOpponentGridCase()));
         // generate all configurations possible
         moveCalculator.generateAllConfigurations();
         // generate all case probabilities
