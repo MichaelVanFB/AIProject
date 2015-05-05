@@ -916,7 +916,8 @@ public class Game extends Application {
 						 * then make options
 						 */
 						if(casesPlayer1[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_DESTROYER 
-								&& casesPlayer1[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CRUISER 
+								&& casesPlayer1[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CRUISER1 
+								&& casesPlayer1[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CRUISER2 
 								&& casesPlayer1[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_BATTLESHIP 
 								&& casesPlayer1[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CARRIER
 								&& casesPlayer1[IJ[0]][IJ[1]].getContents()!=CaseContents.MISS){
@@ -949,14 +950,14 @@ public class Game extends Application {
 							}
 							if(shipType==ShipType.CRUISER1){
 								shipTypeId=1;
-								casesPlayer1[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER);
+								casesPlayer1[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER1);
 								
 								opponentCasesPlayer1[IJ[0]][IJ[1]].setContents(CaseContents.CRUISER1_CASE);								
 								player0.setOpponentGridCase(opponentCasesPlayer1);
 							}
 							if(shipType==ShipType.CRUISER2){
 								shipTypeId=2;
-								casesPlayer1[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER);
+								casesPlayer1[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER2);
 								
 								opponentCasesPlayer1[IJ[0]][IJ[1]].setContents(CaseContents.CRUISER2_CASE);								
 								player0.setOpponentGridCase(opponentCasesPlayer1);
@@ -1040,7 +1041,8 @@ public class Game extends Application {
 							 * then make options
 							 */
 							if(casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_DESTROYER 
-									&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CRUISER 
+									&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CRUISER1
+									&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CRUISER2 
 									&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_BATTLESHIP 
 									&& casesPlayer0[IJ[0]][IJ[1]].getContents()!=CaseContents.HIT_CARRIER
 									&& casesPlayer1[IJ[0]][IJ[1]].getContents()!=CaseContents.MISS ){
@@ -1077,14 +1079,14 @@ public class Game extends Application {
 								}
 								if(shipType==ShipType.CRUISER1){
 									shipTypeId=1;
-									casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER);
+									casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER1);
 
 									opponentCasesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.CRUISER1_CASE);								
 									player1.setOpponentGridCase(opponentCasesPlayer0);
 								}
 								if(shipType==ShipType.CRUISER2){
 									shipTypeId=2;
-									casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER);
+									casesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.HIT_CRUISER2);
 
 									opponentCasesPlayer0[IJ[0]][IJ[1]].setContents(CaseContents.CRUISER2_CASE);								
 									player1.setOpponentGridCase(opponentCasesPlayer0);
