@@ -898,7 +898,7 @@ public class Game extends Application {
 						 * hence delete it from the display
 						 */
 						if(casesPlayer1[IJ[0]][IJ[1]].getContents()==CaseContents.UNKNOWN ){
-							labelEffect(IJ);
+							labelEffect(IJ,0);
 						}
 						/**
 						 * know if the label clicked belongs to a ship/content statement
@@ -959,7 +959,7 @@ public class Game extends Application {
 							if(ships[1][shipTypeId].getShotCount() >= ships[1][shipTypeId].getSize()){
 								ships[1][shipTypeId].setSinked();
 							}
-							gameBorderPane.setRight(setPlayer(0));
+							gameBorderPane.setRight(setPlayer(1));
 							
 							
 						}
@@ -982,7 +982,16 @@ public class Game extends Application {
 						 * call chooseCase to get algorithmic coordinates
 						 */
 						Coordinates coordinates=player1.ChooseCase();
-						System.out.println("X"+coordinates.getX()+"Y"+coordinates.getY());
+						System.out.println(" X :"+coordinates.getX()+" Y :"+coordinates.getY());
+						Case[][] prob =player1.getGridPacker().getGrid().getCases();
+						for(int i=0; i<10; i++){
+							for(int j=0; j<10;j++){
+								System.out.print(prob[i][j].getProbabilityIsShip());
+							}
+							System.out.println();
+						}
+						System.out.println("--------------------------------------------------------------");
+						
 						final int IJ[]={coordinates.getX(),coordinates.getY()};
 						
 							/**
@@ -990,7 +999,7 @@ public class Game extends Application {
 							 * hence delete it from the display
 							 */
 							if(casesPlayer0[IJ[0]][IJ[1]].getContents()==CaseContents.UNKNOWN ){
-								labelEffect(IJ);
+								labelEffect(IJ,1);
 							}
 							/**
 							 * know if the label clicked belongs to a ship/content statement
@@ -1051,7 +1060,7 @@ public class Game extends Application {
 								if(ships[0][shipTypeId].getShotCount() >= ships[0][shipTypeId].getSize()){
 									ships[0][shipTypeId].setSinked();
 								}
-								gameBorderPane.setLeft(setPlayer(1));
+								gameBorderPane.setLeft(setPlayer(0));
 									
 								}
 								/**
@@ -1073,9 +1082,11 @@ public class Game extends Application {
 						
 					}
 					
-					public void labelEffect(int[] labelPosition){
-						
-						gridPlayer1[labelPosition[0]][labelPosition[1]].setStyle(squareGridPaneStyleOnClick);
+					public void labelEffect(int[] labelPosition, int player){
+						if(player==0)
+							gridPlayer1[labelPosition[0]][labelPosition[1]].setStyle(squareGridPaneStyleOnClick);
+						if(player==1)
+							gridPlayer0[labelPosition[0]][labelPosition[1]].setStyle(squareGridPaneStyleOnClick);
 					}
 					
 				});
