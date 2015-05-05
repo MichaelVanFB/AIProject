@@ -3,21 +3,21 @@ package battleships;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-public class Grid<E extends Case>
+public class Grid
 {   
     /**
      * A 2D array of Case or ProbabilityCase instances.
      */
-    protected E[][] cases;
+    protected Case[][] cases;
  
     /**
      * constructor to make a blank grid of known dimensions.
      */
     Grid(int height, int width) {
-        cases = (E[][]) new Object[height][width];
+        cases = new Case[height][width];
     }
     
-    Grid(E[][] stateCases) {
+    Grid(Case[][] stateCases) {
         this.cases = stateCases;
     }
     
@@ -26,30 +26,30 @@ public class Grid<E extends Case>
      * 
      * We want to make copies (not clones!) of each case in the grid.
      */
-    Grid(Grid<E> grid) {
+    Grid(Grid grid) {
         // make a new empty grid of the same size
         this(grid.getHeight(), grid.getWidth());
         // iteratate over the cases of the new grid (this) and set them to the
         // same values as those of the grid being copied
         for (int i = 0; i < grid.getHeight(); i++) {
             for (int j = 0; j < grid.getHeight(); j++) {
-                this.cases[i][j] = (E) grid.cases[i][j].copy();
+                this.cases[i][j] = grid.cases[i][j].copy();
             }
         }        
     }
     
-    E[][] getCases() {
+    Case[][] getCases() {
         return this.cases;
     }
     
-    E getCase(int row, int column) {
+    Case getCase(int row, int column) {
         if (row >= getHeight() || column >= getWidth()) {
             return null;
         }
         return cases[row][column];
     }
     
-    void setCase(int row, int column, E newCase) {
+    void setCase(int row, int column, Case newCase) {
         this.cases[row][column] = newCase;
     }
     

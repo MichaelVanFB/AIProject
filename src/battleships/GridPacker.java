@@ -19,7 +19,7 @@ public class GridPacker
      * The starting grid from which we calculate all the possible ship
      * configurations.
      */
-    private ProbabilityGrid grid;
+    private Grid grid;
     
     private Ship destroyer;
     
@@ -53,9 +53,9 @@ public class GridPacker
     
     
     
-    GridPacker(ProbabilityGrid grid) {
+    GridPacker(Grid grid) {
         instanceCount++;
-        this.grid = new ProbabilityGrid(10,10);
+        this.grid = new Grid(10,10);
         this.condProbability = 1;
         this.destroyer = new Ship(ShipType.DESTROYER);
         this.cruiser1 = new Ship(ShipType.CRUISER1);
@@ -68,7 +68,7 @@ public class GridPacker
         return this.grid;
     }
     
-    void setGrid(ProbabilityGrid grid) {
+    void setGrid(Grid grid) {
         this.grid = grid;
     }
     
@@ -146,7 +146,7 @@ public class GridPacker
         // if no coordinates in ship, then iterate over every case in the grid
         // and see if we can place the ship there vertically or horizontally
         if (coords.length == 0) {
-            ProbabilityCase[][] probaCases = (ProbabilityCase[][]) grid.getCases();
+            Case[][] probaCases = grid.getCases();
             // find all horizontal configurations
             for (int row = 0; row < probaCases.length; row++) {
                 colLoop:
@@ -348,7 +348,7 @@ public class GridPacker
             // for rest
             for (int row = 0; row < grid.getHeight(); row++) {
                 for (int col = 0; col < grid.getWidth(); col++) {
-                    ProbabilityCase currentCase = grid.getCase(row,col);
+                    Case currentCase = grid.getCase(row,col);
                     CaseContents contents = currentCase.getContents();
                     if (contents == CaseContents.UNKNOWN) {
                         currentCase.setProbabilityIsShip(probShip);
@@ -373,7 +373,7 @@ public class GridPacker
             for (GridPacker gp : possibleConfigurations) {
                 for (int row = 0; row < gp.grid.getHeight(); row++) {
                     for (int col = 0; col < gp.grid.getWidth(); col++) {
-                        ProbabilityCase pCase = grid.getCase(row,col);
+                        Case pCase = grid.getCase(row,col);
                         float oldProb = grid.cases[row][col].getProbabilityIsShip();
                         grid.cases[row][col].setProbabilityIsShip(oldProb + condProbability * pCase.getProbabilityIsShip());
                     }

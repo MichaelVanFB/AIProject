@@ -12,7 +12,7 @@ public class SmartAgent extends Player {
     
     public Coordinates ChooseCase() {
         // (re)make the GridPacker using the current state of the game
-        moveCalculator = new GridPacker(new ProbabilityGrid(this.getGridCase()));
+        moveCalculator = new GridPacker(new Grid(this.getGridCase()));
         // generate all configurations possible
         moveCalculator.generateAllConfigurations();
         // generate all case probabilities
@@ -22,7 +22,7 @@ public class SmartAgent extends Player {
     }
     
     public Coordinates chooseMaxProb() {
-        ProbabilityCase[][] cases = (ProbabilityCase[][]) moveCalculator.getGrid().cases;
+        Case[][] cases = moveCalculator.getGrid().cases;
         Coordinates max = new Coordinates(0,0);
         for (int i = 0; i < cases.length; i++) {
             for (int j = 0; j < cases[0].length; j++) {

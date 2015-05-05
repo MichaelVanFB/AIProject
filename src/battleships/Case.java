@@ -3,9 +3,15 @@ package battleships;
 public class Case
 {
     private CaseContents contents;
+    private float probabilityIsShip = 0.0f;
         
-    Case(CaseContents contents) {
+    Case(CaseContents contents, float probability) {
         this.contents = contents;
+        this.probabilityIsShip = probability;
+    }
+    
+    Case(CaseContents contents) {
+        this(contents, 0.0f);
     }
 
     Case() {
@@ -20,8 +26,16 @@ public class Case
         this.contents = contents;
     }
     
+    float getProbabilityIsShip() {
+        return this.probabilityIsShip;
+    }
+
+    void setProbabilityIsShip(float probability) {
+        this.probabilityIsShip = probability;
+    }
+    
     Case copy() {
-        return new Case(this.contents);
+        return new Case(this.contents, this.probabilityIsShip);
     }
 }
 
