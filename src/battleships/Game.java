@@ -986,7 +986,7 @@ public class Game extends Application {
 						Case[][] prob =player1.getGridPacker().getGrid().getCases();
 						for(int i=0; i<10; i++){
 							for(int j=0; j<10;j++){
-								System.out.print(prob[i][j].getProbabilityIsShip());
+								System.out.print(prob[i][j].getProbabilityIsShip()+"  ");
 							}
 							System.out.println();
 						}
