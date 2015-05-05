@@ -982,6 +982,7 @@ public class Game extends Application {
 						 * call chooseCase to get algorithmic coordinates
 						 */
 						Coordinates coordinates=player1.ChooseCase();
+						System.out.println("X"+coordinates.getX()+"Y"+coordinates.getY());
 						final int IJ[]={coordinates.getX(),coordinates.getY()};
 						
 							/**
