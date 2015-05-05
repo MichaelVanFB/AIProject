@@ -79,17 +79,18 @@ public class Ship {
 }
 
 enum ShipType {
-    DESTROYER (2),
-    CRUISER (3),
-    CRUISER1(3),
-    CRUISER2(3),
-    BATTLESHIP(4),
-    CARRIER(5);
+    DESTROYER (2,"destroyer"),
+    CRUISER1(3,"cruiser1"),
+    CRUISER2(3,"cruiser2"),
+    BATTLESHIP(4,"battleship"),
+    CARRIER(5,"carrier");
     
     private final int length;
+    private String name;
     
-    ShipType(int length) {
+    ShipType(int length, String name) {
         this.length = length;
+        this.name = name;
     }
     
     int getLength() {
@@ -98,11 +99,12 @@ enum ShipType {
     
     CaseContents convertToCaseContents() {
         CaseContents result;
-        switch(length){
-            case 2 : result = CaseContents.HIT_DESTROYER; break;
-            case 3 : result = CaseContents.HIT_CRUISER; break;
-            case 4 : result = CaseContents.HIT_BATTLESHIP; break;
-            case 5 : result = CaseContents.HIT_CARRIER; break;
+        switch(name){
+            case "destroyer" : result = CaseContents.DESTROYER_CASE; break;
+            case "cruiser1" : result = CaseContents.CRUISER1_CASE; break;
+            case "cruiser2" : result = CaseContents.CRUISER2_CASE; break;
+            case "battleship" : result = CaseContents.BATTLESHIP_CASE; break;
+            case "carrier" : result = CaseContents.CARRIER_CASE; break;
             default : result = CaseContents.UNKNOWN; break;
         }
         return result;
