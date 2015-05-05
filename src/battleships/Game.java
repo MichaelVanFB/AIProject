@@ -206,9 +206,11 @@ public class Game extends Application {
 							
 							player0=new Player(0,"player1",shipSelectPosLabelPlayer0);
 							player0.setGridCase(casesPlayer0);
+							player0.setOpponentGridCase(opponentCasesPlayer1);
 							
 							player1=new SmartAgent(1,"computer",shipSelectPosLabelPlayer1);
 							player1.setGridCase(casesPlayer1);
+							player1.setOpponentGridCase(opponentCasesPlayer0);
 							
 							BorderPane gameBorderPane= new BorderPane();
 							
