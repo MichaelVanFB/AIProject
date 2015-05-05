@@ -23,10 +23,14 @@ public class SmartAgent extends Player {
     
     public Coordinates chooseMaxProb() {
         Case[][] cases = moveCalculator.getGrid().cases;
-        Coordinates max = new Coordinates(0,0);
+        Coordinates max = null;
         for (int i = 0; i < cases.length; i++) {
             for (int j = 0; j < cases[0].length; j++) {
-                if (cases[i][j].getProbabilityIsShip() > cases[max.getX()][max.getY()].getProbabilityIsShip()) {
+                Case c = cases[i][j];
+                if (max == null && c.getContents() == CaseContents.UNKNOWN) {
+                    max = new Coordinates(i,j);
+                }
+                else if (c.getContents() == CaseContents.UNKNOWN && c.getProbabilityIsShip() > cases[max.getX()][max.getY()].getProbabilityIsShip()) {
                     max = new Coordinates(i,j);
                 }
             }
